@@ -1,11 +1,11 @@
 package com.example.myanime.data;
 
-
 import java.util.ArrayList;
 
-public class ResponseInfo {
+public class ResponseInfo3 {
     public String message;
     public int code;
     public String resultType;
-    public ArrayList<MovieInfo> result = new ArrayList<MovieInfo>();
+    public ArrayList<CommentInfo> result = new ArrayList<CommentInfo>();
+
 }

@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 
 import androidx.annotation.NonNull;
@@ -58,8 +59,15 @@ public class ListFragment extends Fragment {
             }
         }
 
-
         pager.setAdapter(adapter);
+
+        Button button = rootView.findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                main.detailButton(pager.getCurrentItem());
+            }
+        });
 
         return rootView;
     }

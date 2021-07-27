@@ -72,17 +72,6 @@
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textViewLayout"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/detail_btn"
-        android:text="상세보기"
-        android:textSize="24sp"
-        app:backgroundTint="?android:attr/panelBackground"
-        app:backgroundTintMode="add" />
 
 
 </RelativeLayout>

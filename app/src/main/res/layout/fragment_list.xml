@@ -2,12 +2,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/background">
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:clipChildren="false"
         android:clipToPadding="false"
         android:paddingStart="30dp"
@@ -16,5 +17,17 @@
         android:paddingRight="30dp">
 
     </androidx.viewpager2.widget.ViewPager2>
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/pager"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/detail_btn"
+        android:text="상세보기"
+        android:textSize="24sp"
+        app:backgroundTint="?android:attr/panelBackground"
+        app:backgroundTintMode="add" />
 
 </RelativeLayout>

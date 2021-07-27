@@ -28,7 +28,7 @@ public class Member_list extends Fragment {
     ImageView movieImage;
     TextView title, reservationRate, rate, grade;
     String titleStr, reservationRateStr, gradeStr, rateStr, urlStr;
-    int id;
+
     @Override
     public void onAttach(@NonNull @NotNull Context context) {
         super.onAttach(context);
@@ -59,13 +59,6 @@ public class Member_list extends Fragment {
         reservationRate.setText(reservationRateStr);
         grade.setText(gradeStr);
         rate.setText(rateStr);
-        Button button = rootView.findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                main.detailButton();
-            }
-        });
 
 
         return rootView;

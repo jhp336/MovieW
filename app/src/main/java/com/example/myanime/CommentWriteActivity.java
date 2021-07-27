@@ -45,7 +45,6 @@ public class CommentWriteActivity extends AppCompatActivity {
                 }
                 else if(contents.trim().length()>0) {
                     returnToAllView(contents,rate);
-                    finish();
                 }
                 else {
                     MakeAlert("코멘트를 입력해 주세요");
@@ -72,9 +71,9 @@ public class CommentWriteActivity extends AppCompatActivity {
             finish();
         }
         else{// 상세보기에서 바로 작성 -> 모두보기로
-            float rateAvg = getIntent().getFloatExtra("rate",0);
+            float rateAvg = getIntent().getFloatExtra("rateAvg",0);
             list = getIntent().getParcelableArrayListExtra("list");
-            list.add(new CommentItem("wldbs03", "1분 전", contents, "0", rate,false));
+            list.add(0,new CommentItem("wldbs03", "1분 전", contents, "0", rate,false));
             Intent intent2 = new Intent(this, AllCommentActivity.class);
             intent2.putExtra("rateAvg",rateAvg);
             intent2.putExtra("list",list);
