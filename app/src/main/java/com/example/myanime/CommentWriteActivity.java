@@ -4,33 +4,53 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RatingBar;
+import android.widget.TextView;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CommentWriteActivity extends AppCompatActivity {
     Button saveButton, cancelButton;
+    TextView title;
+    ImageView imageView;
     EditText editText;
     RatingBar ratingBar;
-    String contents;
-    float rate;
-    int where;
+    String contents, titleStr;
+    float rate, rateAvg;
+    int where, grade ,id;
     ArrayList<CommentItem> list;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comment_write);
 
-        where = getIntent().getIntExtra("where",0);
+        title = findViewById(R.id.textView24);
+        imageView = findViewById(R.id.imageView);
+        Intent passedIntent = getIntent();
+        processIntent(passedIntent);
+
         saveButton = findViewById(R.id.button9);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,7 +64,8 @@ public class CommentWriteActivity extends AppCompatActivity {
                     MakeAlert("평점을 입력해 주세요!\n 0.5 ~ 5.0");
                 }
                 else if(contents.trim().length()>0) {
-                    returnToAllView(contents,rate);
+                    dataToServer(contents,rate);
+                    returnToAllView();
                 }
                 else {
                     MakeAlert("코멘트를 입력해 주세요");
@@ -62,22 +83,17 @@ public class CommentWriteActivity extends AppCompatActivity {
 
     }
 
-    private void returnToAllView(String contents, float rate){
+    private void returnToAllView(){
         if(where==1) { // 모두보기에서 작성 -> 모두보기로 돌아감
-            Intent intent = new Intent();
-            intent.putExtra("contents", contents);
-            intent.putExtra("rate", rate);
-            setResult(RESULT_OK, intent);
             finish();
         }
         else{// 상세보기에서 바로 작성 -> 모두보기로
-            float rateAvg = getIntent().getFloatExtra("rateAvg",0);
-            list = getIntent().getParcelableArrayListExtra("list");
-            list.add(0,new CommentItem("wldbs03", "1분 전", contents, "0", rate,false));
-            Intent intent2 = new Intent(this, AllCommentActivity.class);
-            intent2.putExtra("rateAvg",rateAvg);
-            intent2.putExtra("list",list);
-            launcher.launch(intent2);
+            Intent intent = new Intent(this, AllCommentActivity.class);
+            intent.putExtra("rateAvg",rateAvg);
+            intent.putExtra("title",titleStr);
+            intent.putExtra("grade",grade);
+            intent.putExtra("id",id);
+            launcher.launch(intent);
         }
     }
 
@@ -95,7 +111,70 @@ public class CommentWriteActivity extends AppCompatActivity {
                 }
             });
 
+    public void dataToServer(String contents, float rate){
+        String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/createComment";
 
+        StringRequest request = new StringRequest(
+                Request.Method.POST,
+                url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            Log.d("Response-Error", "응답 옴");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("Response-Error", "응답 오류");
+                    }
+                }
+        ){
+            @Nullable
+            @org.jetbrains.annotations.Nullable
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("id",String.valueOf(id));
+                params.put("writer","testUser");
+                params.put("rating",String.valueOf(rate));
+                params.put("contents",contents);
+
+                return params;
+            }
+        };
+
+        request.setShouldCache(false);
+        AppHelper.requestQueue.add(request);
+    }
+
+    private void processIntent(Intent intent){
+        where = intent.getIntExtra("where",1);
+        titleStr = intent.getStringExtra("title");
+        title.setText(titleStr);
+        id = intent.getIntExtra(("id"),0);
+        grade = intent.getIntExtra("grade",0);
+        switch (grade) {
+            case 12:
+                imageView.setImageResource(R.drawable.ic_12);
+                break;
+            case 15:
+                imageView.setImageResource(R.drawable.ic_15);
+                break;
+            case 19:
+                imageView.setImageResource(R.drawable.ic_19);
+                break;
+            default:
+                imageView.setImageResource(R.drawable.ic_all);
+                break;
+        }
+
+        rateAvg = intent.getFloatExtra("rateAvg",0);
+    }
 
     public void MakeAlert(String Message){
         AlertDialog.Builder builder = new AlertDialog.Builder(CommentWriteActivity.this);

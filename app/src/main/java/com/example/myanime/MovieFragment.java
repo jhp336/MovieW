@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +25,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
@@ -31,6 +34,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.example.myanime.data.CommentInfo;
 import com.example.myanime.data.DetailInfo;
 import com.example.myanime.data.MovieInfo;
+import com.example.myanime.data.ResponseInfo3;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -40,13 +44,14 @@ import java.util.ArrayList;
 
 public class MovieFragment extends Fragment {
     RatingBar ratingbar;
-    TextView textview, likeView, hateView, title, date, duration, genre, reservation, audience, synopsis, director, actor;
+    TextView textview, likeView, hateView, title, date, duration, genre, reservation, audience, synopsis, director, actor, commentNum;
     Button button, button2, commentWrite, allComment;
     ListView listView;
     ImageView imageView, gradeImage;
     CommentAdapter adapter;
     ViewGroup rootView;
     MainActivity main;
+    int grade, id;
 
     boolean likeState = false, hateState = false;
     int likeCount, hateCount;
@@ -68,6 +73,7 @@ public class MovieFragment extends Fragment {
     @org.jetbrains.annotations.Nullable
     @Override
     public View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        Log.d("TAG", "onCreateView: 생성");
         rootView = (ViewGroup)inflater.inflate(R.layout.fragment_movie,container,false);
         ratingbar = rootView.findViewById(R.id.ratingBar);
         textview = rootView.findViewById(R.id.textView12);
@@ -87,6 +93,7 @@ public class MovieFragment extends Fragment {
         director = rootView.findViewById(R.id.textView19);
         actor = rootView.findViewById(R.id.textView21);
         gradeImage = rootView.findViewById(R.id.imageView5);
+        commentNum = rootView.findViewById(R.id.textView28);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -122,17 +129,11 @@ public class MovieFragment extends Fragment {
 
         listView = rootView.findViewById(R.id.listView);
         adapter = new CommentAdapter();
-        /*adapter.addItem(new CommentItem("Jung1098", "5달 전", "벌여 놓은 건 많은데 수습할 수 있을까?\n가능하다면" +
-                " 역대 한국 블록버스터 올타임 넘버원", "1024", 5, false));
-        adapter.addItem(new CommentItem("어울림", "3달 전", "특유의 만화스러운 연출과 독백이 가끔 거슬리지만 CG 진짜 레전드" +
-                "\n + 에렌 소리좀 그만질러!!", "788", 4, false));
-        adapter.addItem(new CommentItem("브레인스워즈", "3달 전", "절망, 공포, 충격, 전율 그 자체.\n반전과 폭력에 대한" +
-                " 아이러니를 '집단'과 '위협'으로 능수능란하게 메타포화시키다."
-                , "755", 5, false));*/
         listView.setAdapter(adapter);
 
         commentWrite = rootView.findViewById(R.id.button4);
         commentWrite.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.Q)
             @Override
             public void onClick(View v) {
                 main.showCommentWrite();
@@ -141,6 +142,7 @@ public class MovieFragment extends Fragment {
 
         allComment = rootView.findViewById(R.id.button5);
         allComment.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.Q)
             @Override
             public void onClick(View v) {
                 main.showAllComment();
@@ -176,6 +178,7 @@ public class MovieFragment extends Fragment {
 
     @SuppressLint("SetTextI18n")
     public void setDetail(DetailInfo info){
+        id = info.id;
         Glide.with(this).load(info.thumb).into(imageView);
         title.setText(info.title);
         date.setText(info.date);
@@ -191,7 +194,8 @@ public class MovieFragment extends Fragment {
         synopsis.setText(info.synopsis);
         director.setText(info.director);
         actor.setText(info.actor);
-        switch (info.grade) {
+        grade = info.grade;
+        switch (grade) {
             case 12:
                 gradeImage.setImageResource(R.drawable.ic_12);
                 break;
@@ -209,13 +213,25 @@ public class MovieFragment extends Fragment {
 
     }
 
-    public void setComment(ArrayList<CommentInfo> list){
-        for(int i=0;i<list.size();i++){
-            CommentInfo info = list.get(i);
+    @SuppressLint("SetTextI18n")
+    public void setComment(ResponseInfo3 resinfo){
+        commentNum.setText(resinfo.totalCount+" 명");
+        for(int i=0;i<resinfo.result.size();i++){
+            CommentInfo info = resinfo.result.get(i);
             CommentItem item = new CommentItem(info.writer,info.time,info.contents,String.valueOf(info.recommend),info.rating,false);
             adapter.addItem(item);
         }
         listView.setAdapter(adapter);
+        int totalHeight=0;
+        for(int i=0;i<3;i++){
+            View listItem = adapter.getView(i, null, listView);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * 2);
+        listView.setLayoutParams(params);
+        listView.requestLayout();
     }
 
     public void make_Toast(String message){

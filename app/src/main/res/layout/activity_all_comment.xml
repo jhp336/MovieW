@@ -24,18 +24,17 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:textSize="24sp"
-            android:textStyle="bold"
-            android:text="@string/anime_name" />
+            android:textStyle="bold" />
 
         <ImageView
+            android:id="@+id/imageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="false"
             android:layout_marginStart="5dp"
             android:layout_marginLeft="5dp"
             android:layout_toEndOf="@+id/textView26"
-            android:layout_toRightOf="@+id/textView26"
-            android:src="@drawable/ic_19" />
+            android:layout_toRightOf="@+id/textView26" />
     </RelativeLayout>
 
     <View
@@ -69,13 +68,11 @@
             android:layout_marginRight="4dp"
             android:layout_toStartOf="@+id/rateNum"
             android:layout_toLeftOf="@+id/rateNum"
-            android:text="하이"
             android:textSize="16sp"/>
         <TextView
             android:id="@+id/rateNum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="(16.4만 명 참여)"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:textSize="16sp"/>

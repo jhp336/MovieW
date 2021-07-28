@@ -216,9 +216,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         request.setShouldCache(false);
         AppHelper.requestQueue.add(request);
 
-        url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readCommentList";
+        requestCommentList(index);
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, movieFragment).addToBackStack(null).commit();
+        isLayoutList = false;
+    }
+
+    public void requestCommentList(int index){
+        String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readCommentList";
         url += "?" + "id=" + (index + 1)+ "&limit=50";
-        request = new StringRequest(
+        StringRequest request = new StringRequest(
                 Request.Method.GET,
                 url,
                 new Response.Listener<String>() {
@@ -241,9 +248,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         );
         request.setShouldCache(false);
         AppHelper.requestQueue.add(request);
-
-        getSupportFragmentManager().beginTransaction().replace(R.id.container, movieFragment).addToBackStack(null).commit();
-        isLayoutList = false;
     }
 
     public void processResponse2(String response){
@@ -258,7 +262,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Gson gson = new Gson();
         CommentInfo = gson.fromJson(response, ResponseInfo3.class);
         if (CommentInfo.code == 200) {
-            movieFragment.setComment(CommentInfo.result);
+            movieFragment.setComment(CommentInfo);
         }
     }
     //코멘트 작성
@@ -266,14 +270,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Intent intent = new Intent(this, CommentWriteActivity.class);
         intent.putExtra("where", 0);
         intent.putExtra("rateAvg", movieFragment.rate);
-        intent.putExtra("list", movieFragment.adapter.items);
+        intent.putExtra("title", movieFragment.title.getText());
+        intent.putExtra("grade", movieFragment.grade);
+        intent.putExtra("id", movieFragment.id);
         launcher.launch(intent);
     }
     //코멘트 모두보기
     public void showAllComment() {
         Intent intent = new Intent(this, AllCommentActivity.class);
         intent.putExtra("rateAvg", movieFragment.rate);
-        intent.putExtra("list", movieFragment.adapter.items);
+        intent.putExtra("title", movieFragment.title.getText());
+        intent.putExtra("grade", movieFragment.grade);
+        intent.putExtra("id", movieFragment.id);
         launcher.launch(intent);
     }
 

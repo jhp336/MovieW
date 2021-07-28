@@ -48,6 +48,6 @@ public class CommentAdapter extends BaseAdapter {
     }
 
     public void addItem(CommentItem item){
-        items.add(0,item);
+        items.add(item);
     }
 }
