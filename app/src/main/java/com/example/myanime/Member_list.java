@@ -33,7 +33,6 @@ public class Member_list extends Fragment {
     public void onAttach(@NonNull @NotNull Context context) {
         super.onAttach(context);
         main=(MainActivity)getActivity();
-        Log.d("으아아아", "onAttach: ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ");
     }
 
     @Override

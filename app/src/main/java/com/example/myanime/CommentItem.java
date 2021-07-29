@@ -10,13 +10,15 @@ public class CommentItem implements Parcelable {
     String userId, Date, Comment, Like;
     boolean likeState;
     float Rate;
-    public CommentItem(String userId, String date, String comment, String like, float rate, boolean likeState) {
+    int id;
+    public CommentItem(String userId, String date, String comment, String like, float rate, boolean likeState, int id) {
         this.userId = userId;
         this.Date = date;
         this.Comment = comment;
         this.Like = like;
         this.Rate = rate;
         this.likeState = likeState;
+        this.id = id;
     }
     @RequiresApi(api = Build.VERSION_CODES.Q)
     public  CommentItem(Parcel src) {
@@ -26,6 +28,7 @@ public class CommentItem implements Parcelable {
         Like = src.readString();
         Rate = src.readFloat();
         likeState = src.readBoolean();
+        id = src.readInt();
     }
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator(){
         @RequiresApi(api = Build.VERSION_CODES.Q)
@@ -52,6 +55,7 @@ public class CommentItem implements Parcelable {
         dest.writeString(Like);
         dest.writeFloat(Rate);
         dest.writeBoolean(likeState);
+        dest.writeInt(id);
     }
 
 
@@ -101,5 +105,13 @@ public class CommentItem implements Parcelable {
     }
     public void setLikeState(boolean likeState) {
         this.likeState = likeState;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

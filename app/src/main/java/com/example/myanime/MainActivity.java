@@ -18,20 +18,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.renderscript.Sampler;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.MenuItem;
-
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.myanime.data.CommentInfo;
-import com.example.myanime.data.DetailInfo;
-import com.example.myanime.data.MovieInfo;
 import com.example.myanime.data.ResponseInfo;
 import com.example.myanime.data.ResponseInfo2;
 import com.example.myanime.data.ResponseInfo3;
@@ -39,11 +34,6 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
 
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,FragmentCallback {
@@ -58,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("TAG", "onCreate: 메인");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -75,9 +66,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setItemIconTintList(null);
         listFragment = new ListFragment();
         movieFragment = new MovieFragment();
-        Log.d("asdaasdadadasd", "onCreate: onzzzzzzzzzzzzz");
 
-        Log.d("ㅋㅋㅋㅋㅋㅋ", "onCreate: frag 끝");
         if (AppHelper.requestQueue == null) {
             AppHelper.requestQueue = Volley.newRequestQueue(getApplicationContext());
         }
@@ -147,7 +136,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void readMovieList() {
-        Log.d("Response-Error", "응답 ???");
         String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readMovieList";
         url += "?" + "type=1";
         StringRequest request = new StringRequest(
@@ -157,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onResponse(String response) {
                         try {
-                            Log.d("Response-Error", "응답 옴");
+                            Log.d("Response-Error", "응답1 옴");
                             processResponse(response);
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -178,8 +166,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void processResponse(String response) {
-        Log.d("Response-Error", "응답 ㅋㅋㅋㅋ");
-
         Gson gson = new Gson();
         responseInfo = gson.fromJson(response, ResponseInfo.class);
         if (responseInfo.code == 200) {
@@ -198,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onResponse(String response) {
                         try {
-                            Log.d("Response-Error", "응답 옴");
+                            Log.d("Response-Error", "응답2 옴");
                             processResponse2(response);
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -224,7 +210,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void requestCommentList(int index){
         String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readCommentList";
-        url += "?" + "id=" + (index + 1)+ "&limit=50";
+        url += "?" + "id=" + (index + 1)+ "&limit=3";
         StringRequest request = new StringRequest(
                 Request.Method.GET,
                 url,
@@ -232,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onResponse(String response) {
                         try {
-                            Log.d("Response-Error", "응답 옴");
+                            Log.d("Response-Error", "응답3 옴");
                             processResponse3(response);
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -290,8 +276,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 @Override
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        movieFragment.adapter.items = result.getData().getParcelableArrayListExtra("list");
-                        movieFragment.listView.setAdapter(movieFragment.adapter);
+                        requestCommentList(movieFragment.id-1);
                     }
                 }
             });

@@ -42,6 +42,7 @@ public class CommentAdapter extends BaseAdapter {
         view.setComment(item.getComment());
         view.setLikeCount(item.getLike());
         view.setLikeState(item.isLikeState());
+        view.setCommentId(item.getId());
         view.clickListen(item);
 
         return view;

@@ -29,6 +29,11 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.example.myanime.data.CommentInfo;
@@ -40,6 +45,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class MovieFragment extends Fragment {
@@ -101,8 +108,10 @@ public class MovieFragment extends Fragment {
                     make_Toast("이미 '싫어요'를 누르셨습니다.");
                 } else {
                     if (likeState) {
+                        LikeHateData("N","");
                         decrLikeCount();
                     } else {
+                        LikeHateData("Y","");
                         incrLikeCount();
                     }
                     likeState = !likeState;
@@ -118,8 +127,10 @@ public class MovieFragment extends Fragment {
                     make_Toast("이미 '좋아요'를 누르셨습니다.");
                 } else {
                     if (hateState) {
+                        LikeHateData("","N");
                         decrHateCount();
                     } else {
+                        LikeHateData("","Y");
                         incrHateCount();
                     }
                     hateState = !hateState;
@@ -133,7 +144,6 @@ public class MovieFragment extends Fragment {
 
         commentWrite = rootView.findViewById(R.id.button4);
         commentWrite.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.Q)
             @Override
             public void onClick(View v) {
                 main.showCommentWrite();
@@ -142,13 +152,55 @@ public class MovieFragment extends Fragment {
 
         allComment = rootView.findViewById(R.id.button5);
         allComment.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.Q)
             @Override
             public void onClick(View v) {
                 main.showAllComment();
             }
         });
         return  rootView;
+    }
+
+    public void LikeHateData(String like,String hate){
+        String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/increaseLikeDisLike";
+
+        StringRequest request = new StringRequest(
+                Request.Method.POST,
+                url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            Log.d("Response-Error", "응답2 보냄" +response);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("Response-Error", "응답 오류" + error);
+                    }
+                }
+        ){
+            @Nullable
+            @org.jetbrains.annotations.Nullable
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("id",String.valueOf(id));
+                if (like != "") {
+                    params.put("likeyn",like);
+                }
+                if (hate != "") {
+                    params.put("dislikeyn", hate);
+                }
+                return params;
+            }
+        };
+
+        request.setShouldCache(false);
+        AppHelper.requestQueue.add(request);
     }
 
     public void incrLikeCount(){
@@ -215,10 +267,12 @@ public class MovieFragment extends Fragment {
 
     @SuppressLint("SetTextI18n")
     public void setComment(ResponseInfo3 resinfo){
+        adapter = new CommentAdapter();
+        Log.d("TAG", "setComment: 설정");
         commentNum.setText(resinfo.totalCount+" 명");
         for(int i=0;i<resinfo.result.size();i++){
             CommentInfo info = resinfo.result.get(i);
-            CommentItem item = new CommentItem(info.writer,info.time,info.contents,String.valueOf(info.recommend),info.rating,false);
+            CommentItem item = new CommentItem(info.writer,info.time,info.contents,String.valueOf(info.recommend),info.rating,false,info.id);
             adapter.addItem(item);
         }
         listView.setAdapter(adapter);

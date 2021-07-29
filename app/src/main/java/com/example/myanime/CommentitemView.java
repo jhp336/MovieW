@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -14,11 +15,22 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class CommentitemView extends LinearLayout {
     TextView userId, Date, Comment, LikeCount, LikeText, ReportView;
     RatingBar ratingBar;
     boolean like_commentState;
     int likeCount_comment;
+    int id;
+
 
     public CommentitemView(Context context) {
         super(context);
@@ -74,19 +86,61 @@ public class CommentitemView extends LinearLayout {
             LikeText.setText("추천");
         }
     }
+    public void setCommentId(int id){
+        this.id=id;
+    }
+
+    public void CommentLikeData(int id){
+        String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/increaseRecommend";
+
+        StringRequest request = new StringRequest(
+                Request.Method.POST,
+                url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            Log.d("Response-Error", "응답3 보냄" +response);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("Response-Error", "응답 오류" );
+                    }
+                }
+        ){
+            @Nullable
+            @org.jetbrains.annotations.Nullable
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("review_id",String.valueOf(id));
+
+                return params;
+            }
+        };
+
+        request.setShouldCache(false);
+        AppHelper.requestQueue.add(request);
+    }
 
     public void clickListen(CommentItem item){
         LikeText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 likeCount_comment = Integer.parseInt(LikeCount.getText().toString());
-                if(like_commentState){
+                /*if(like_commentState){
                     LikeText.setTextColor(Color.parseColor("#706B6B"));
                     LikeCount.setTextColor(Color.parseColor("#706B6B"));
                     LikeText.setText("추천");
                     likeCount_comment -= 1;
                 }
-                else {
+                else*/if(!like_commentState) {
+                    CommentLikeData(id);
                     LikeText.setTextColor(Color.parseColor("#06A5A0"));
                     LikeCount.setTextColor(Color.parseColor("#06A5A0"));
                     LikeText.setText("추천됨");
@@ -94,8 +148,8 @@ public class CommentitemView extends LinearLayout {
                 }
                 LikeCount.setText(String.valueOf(likeCount_comment));
                 item.setLike(String.valueOf(likeCount_comment));
-                like_commentState = !like_commentState;
-                item.likeState = like_commentState;
+                like_commentState = /*!like_commentState;*/true;
+                item.setLikeState(true);
 
             }
         });

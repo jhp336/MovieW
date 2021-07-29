@@ -85,6 +85,8 @@ public class CommentWriteActivity extends AppCompatActivity {
 
     private void returnToAllView(){
         if(where==1) { // 모두보기에서 작성 -> 모두보기로 돌아감
+            Intent intent = new Intent();
+            setResult(RESULT_OK, intent);
             finish();
         }
         else{// 상세보기에서 바로 작성 -> 모두보기로
@@ -102,9 +104,7 @@ public class CommentWriteActivity extends AppCompatActivity {
                 @Override
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == RESULT_OK && result.getData()!=null) {
-                        list = result.getData().getParcelableArrayListExtra("list");
                         Intent intent = new Intent();
-                        intent.putParcelableArrayListExtra("list",list);
                         setResult(RESULT_OK, intent);
                         finish();
                     }
@@ -121,7 +121,7 @@ public class CommentWriteActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         try {
-                            Log.d("Response-Error", "응답 옴");
+                            Log.d("Response-Error", "응답1 보냄");
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -140,7 +140,7 @@ public class CommentWriteActivity extends AppCompatActivity {
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("id",String.valueOf(id));
-                params.put("writer","testUser");
+                params.put("writer","iron");
                 params.put("rating",String.valueOf(rate));
                 params.put("contents",contents);
 

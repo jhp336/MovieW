@@ -56,7 +56,6 @@ public class AllCommentActivity extends AppCompatActivity {
         Intent passedIntent = getIntent();
         processIntent(passedIntent);
 
-        adapter = new CommentAdapter();
         requestCommentList();
         listView.setAdapter(adapter);
 
@@ -80,7 +79,6 @@ public class AllCommentActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         Intent intent = new Intent();
-        intent.putParcelableArrayListExtra("list", adapter.items);
 
         setResult(RESULT_OK, intent);
         finish();
@@ -100,7 +98,8 @@ public class AllCommentActivity extends AppCompatActivity {
                 @Override
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == RESULT_OK && result.getData()!=null) {
-                        listView.setAdapter(adapter);
+                        Log.d("TAG", "onActivityResult: "+result.getData());
+                        requestCommentList();
                     }
                 }
             });
@@ -163,15 +162,17 @@ public class AllCommentActivity extends AppCompatActivity {
     public void processResponse3(String response){
         Gson gson = new Gson();
         ResponseInfo3 commentInfo = gson.fromJson(response, ResponseInfo3.class);
+        adapter = new CommentAdapter();
 
         if (commentInfo.code == 200) {
             rateNum.setText("("+commentInfo.totalCount+" 명)");
             for(int i=0;i<commentInfo.result.size();i++){
                 CommentInfo info = commentInfo.result.get(i);
-                CommentItem item = new CommentItem(info.writer,info.time,info.contents,String.valueOf(info.recommend),info.rating,false);
+                CommentItem item = new CommentItem(info.writer,info.time,info.contents,String.valueOf(info.recommend),info.rating,false,info.id);
                 adapter.addItem(item);
             }
             listView.setAdapter(adapter);
         }
+
     }
 }
