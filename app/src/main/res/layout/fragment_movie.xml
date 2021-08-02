@@ -135,7 +135,6 @@
                             android:layout_height="30dp"
                             android:layout_marginRight="5dp"
                             android:layout_marginEnd="5dp"
-                            android:background="@drawable/thumb_up"
                             app:backgroundTint="?android:attr/panelBackground"
                             app:backgroundTintMode="add" />
 
@@ -153,7 +152,6 @@
                             android:layout_height="30dp"
                             android:layout_marginRight="5dp"
                             android:layout_marginEnd="5dp"
-                            android:background="@drawable/thumb_down"
                             app:backgroundTint="?android:attr/panelBackground"
                             app:backgroundTintMode="add" />
 

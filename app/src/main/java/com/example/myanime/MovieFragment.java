@@ -101,11 +101,24 @@ public class MovieFragment extends Fragment {
         actor = rootView.findViewById(R.id.textView21);
         gradeImage = rootView.findViewById(R.id.imageView5);
         commentNum = rootView.findViewById(R.id.textView28);
+        if(likeState){
+            button.setBackgroundResource(R.drawable.ic_thumb_up_selected);
+        }
+        else{
+            button.setBackgroundResource(R.drawable.ic_thumb_up);
+        }
+        if(hateState){
+            button2.setBackgroundResource(R.drawable.ic_thumb_down_selected);
+        }
+        else{
+            button2.setBackgroundResource(R.drawable.ic_thumb_down);
+        }
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (hateState) {
-                    make_Toast("이미 '싫어요'를 누르셨습니다.");
+                    main.make_Toast("이미 '싫어요'를 누르셨습니다.");
                 } else {
                     if (likeState) {
                         LikeHateData("N","");
@@ -124,7 +137,7 @@ public class MovieFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (likeState) {
-                    make_Toast("이미 '좋아요'를 누르셨습니다.");
+                    main.make_Toast("이미 '좋아요'를 누르셨습니다.");
                 } else {
                     if (hateState) {
                         LikeHateData("","N");
@@ -288,15 +301,5 @@ public class MovieFragment extends Fragment {
         listView.requestLayout();
     }
 
-    public void make_Toast(String message){
-        LayoutInflater inflater = getLayoutInflater();
-        View layout = inflater.inflate(R.layout.toast_custom,rootView.findViewById(R.id.toast_layout));
-        TextView text = layout.findViewById(R.id.textView23);
-        text.setText(message);
 
-        Toast toast = new Toast(getContext());
-        toast.setDuration(Toast.LENGTH_SHORT);
-        toast.setView(layout);
-        toast.show();
-    }
 }

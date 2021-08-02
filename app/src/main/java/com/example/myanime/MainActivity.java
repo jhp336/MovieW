@@ -20,13 +20,19 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.myanime.data.CommentInfo;
+import com.example.myanime.data.DetailInfo;
 import com.example.myanime.data.ResponseInfo;
 import com.example.myanime.data.ResponseInfo2;
 import com.example.myanime.data.ResponseInfo3;
@@ -43,8 +49,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     NavigationView navigationView;
     boolean isLayoutList;
     ResponseInfo responseInfo;
-    ResponseInfo2 DetailInfo;
-    ResponseInfo3 CommentInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,8 +74,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (AppHelper.requestQueue == null) {
             AppHelper.requestQueue = Volley.newRequestQueue(getApplicationContext());
         }
-        if (responseInfo == null) {
+
+        AppHelper.openDB(this,"movie");
+        AppHelper.createTable("outline");
+
+        int status = AppHelper.getConnectStatus(this);
+        if (status != AppHelper.TYPE_UNCONNECTED) {
             readMovieList();
+        }
+        else{
+            make_Toast("인터넷에 연결이 안 되었음!!");
         }
         getSupportFragmentManager().beginTransaction().add(R.id.container, listFragment).commit();
         isLayoutList = true;
@@ -238,7 +250,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void processResponse2(String response){
         Gson gson = new Gson();
-        DetailInfo = gson.fromJson(response, ResponseInfo2.class);
+        ResponseInfo2 DetailInfo = gson.fromJson(response, ResponseInfo2.class);
         if (DetailInfo.code == 200) {
             movieFragment.setDetail(DetailInfo.result.get(0));
         }
@@ -246,7 +258,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void processResponse3(String response){
         Gson gson = new Gson();
-        CommentInfo = gson.fromJson(response, ResponseInfo3.class);
+        ResponseInfo3 CommentInfo = gson.fromJson(response, ResponseInfo3.class);
         if (CommentInfo.code == 200) {
             movieFragment.setComment(CommentInfo);
         }
@@ -280,4 +292,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 }
             });
+
+    public void make_Toast(String message){
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.toast_custom, findViewById(R.id.toast_layout));
+        TextView text = layout.findViewById(R.id.textView23);
+        text.setText(message);
+
+        Toast toast = new Toast(this);
+        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.setView(layout);
+        toast.show();
+    }
 }

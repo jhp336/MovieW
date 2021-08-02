@@ -50,16 +50,11 @@ public class ListFragment extends Fragment {
 
         adapter = new MoviePageAdapter(this);
         if(main.responseInfo!=null) {
-            for (int i = 0; i < main.responseInfo.result.size(); i++) {
-                MovieInfo info = main.responseInfo.result.get(i);
-                Member_list mem = new Member_list();
-                mem.setMemInfo(info);
-
-                adapter.addItem(mem);
-            }
+            setInfo(main.responseInfo);
         }
-
-        pager.setAdapter(adapter);
+        else {
+            pager.setAdapter(adapter);
+        }
 
         Button button = rootView.findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
