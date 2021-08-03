@@ -280,7 +280,9 @@ public class MovieFragment extends Fragment {
 
     @SuppressLint("SetTextI18n")
     public void setComment(ResponseInfo3 resinfo){
-        adapter = new CommentAdapter();
+        if(adapter.getCount()!=0) {
+            adapter = new CommentAdapter();
+        }
         Log.d("TAG", "setComment: 설정");
         commentNum.setText(resinfo.totalCount+" 명");
         for(int i=0;i<resinfo.result.size();i++){

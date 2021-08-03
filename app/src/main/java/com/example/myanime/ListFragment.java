@@ -1,5 +1,6 @@
 package com.example.myanime;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 
 import android.os.Bundle;
@@ -16,8 +17,15 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.example.myanime.data.CommentInfo;
 import com.example.myanime.data.MovieInfo;
 import com.example.myanime.data.ResponseInfo;
+import com.example.myanime.data.ResponseInfo3;
+import com.google.gson.Gson;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -49,12 +57,15 @@ public class ListFragment extends Fragment {
         pager.setOffscreenPageLimit(3);
 
         adapter = new MoviePageAdapter(this);
-        if(main.responseInfo!=null) {
-            setInfo(main.responseInfo);
+        int status = AppHelper.getConnectStatus(getContext());
+        if (status != AppHelper.TYPE_UNCONNECTED) {
+            main.readMovieList();
+        } else {
+            main.make_Toast("인터넷에 연결이 안 되었음!!");
+            ArrayList<MovieInfo> list= AppHelper.selectOutline();
+            setInfo(list);;
         }
-        else {
-            pager.setAdapter(adapter);
-        }
+        pager.setAdapter(adapter);
 
         Button button = rootView.findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
@@ -89,10 +100,10 @@ public class ListFragment extends Fragment {
             return items.size();
         }
     }
-    public void setInfo(ResponseInfo responseInfo){
+    public void setInfo(ArrayList<MovieInfo> list){
         Log.d("setinfo", "setInfo: on");
-        for(int i=0;i<responseInfo.result.size();i++){
-            MovieInfo info = responseInfo.result.get(i);
+        for(int i=0;i<list.size();i++){
+            MovieInfo info = list.get(i);
             Member_list mem = new Member_list();
             mem.setMemInfo(info);
 
@@ -100,4 +111,5 @@ public class ListFragment extends Fragment {
         }
         pager.setAdapter(adapter);
     }
+
 }

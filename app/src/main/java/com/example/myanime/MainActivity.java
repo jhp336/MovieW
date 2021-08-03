@@ -14,6 +14,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
@@ -33,6 +34,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.myanime.data.CommentInfo;
 import com.example.myanime.data.DetailInfo;
+import com.example.myanime.data.MovieInfo;
 import com.example.myanime.data.ResponseInfo;
 import com.example.myanime.data.ResponseInfo2;
 import com.example.myanime.data.ResponseInfo3;
@@ -41,6 +43,8 @@ import com.google.gson.Gson;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,FragmentCallback {
     ListFragment listFragment;
@@ -48,7 +52,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     DrawerLayout drawer;
     NavigationView navigationView;
     boolean isLayoutList;
-    ResponseInfo responseInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,14 +80,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         AppHelper.openDB(this,"movie");
         AppHelper.createTable("outline");
+        AppHelper.createTable("detail");
+        AppHelper.createTable("comment");
 
-        int status = AppHelper.getConnectStatus(this);
-        if (status != AppHelper.TYPE_UNCONNECTED) {
-            readMovieList();
-        }
-        else{
-            make_Toast("인터넷에 연결이 안 되었음!!");
-        }
+
         getSupportFragmentManager().beginTransaction().add(R.id.container, listFragment).commit();
         isLayoutList = true;
     }
@@ -147,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    public void readMovieList() {
+    public void readMovieList(){
         String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readMovieList";
         url += "?" + "type=1";
         StringRequest request = new StringRequest(
@@ -171,17 +170,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 }
         );
-
         request.setShouldCache(false);
         AppHelper.requestQueue.add(request);
-
     }
-
-    public void processResponse(String response) {
+    @SuppressLint("SetTextI18n")
+    public void processResponse(String response){
         Gson gson = new Gson();
-        responseInfo = gson.fromJson(response, ResponseInfo.class);
+        ResponseInfo responseInfo = gson.fromJson(response, ResponseInfo.class);
         if (responseInfo.code == 200) {
-            listFragment.setInfo(responseInfo);
+            listFragment.setInfo(responseInfo.result);
         }
     }
 

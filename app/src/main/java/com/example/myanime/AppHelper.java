@@ -1,6 +1,7 @@
 package com.example.myanime;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.Network;
@@ -12,7 +13,11 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.example.myanime.data.CommentInfo;
+import com.example.myanime.data.DetailInfo;
 import com.example.myanime.data.MovieInfo;
+
+import java.util.ArrayList;
 
 public class AppHelper {
     public static RequestQueue requestQueue;
@@ -46,8 +51,9 @@ public class AppHelper {
 
     public static void createTable(String tableName){
         if(database!=null){
+            String sql="";
             if(tableName.equals("outline")){
-                String outlineSql = "create table if not exists outline(" +
+                sql = "create table if not exists outline(" +
                         "_id integer PRIMARY KEY autoincrement, " +
                         "id integer, " +
                         "title text, " +
@@ -62,10 +68,9 @@ public class AppHelper {
                         "thumb text, " +
                         "image text" +
                         ")";
-                database.execSQL(outlineSql);
             }
             else if(tableName.equals("detail")){
-                String detailSql = "create table if not exists detail(" +
+                sql = "create table if not exists detail(" +
                         "_id integer PRIMARY KEY autoincrement, " +
                         "id integer, " +
                         "title text, " +
@@ -90,10 +95,9 @@ public class AppHelper {
                         "likes integer, " +
                         "dislike integer" +
                         ")";
-                database.execSQL(detailSql);
             }
             else if(tableName.equals("comment")){
-                String commentSql = "create table if not exists comment(" +
+                sql = "create table if not exists comment(" +
                         "_id integer PRIMARY KEY autoincrement, " +
                         "id integer, " +
                         "writer text, " +
@@ -105,8 +109,8 @@ public class AppHelper {
                         "contents text, " +
                         "recommend integer" +
                         ")";
-                database.execSQL(commentSql);
             }
+            database.execSQL(sql);
         }
     }
 
@@ -117,7 +121,48 @@ public class AppHelper {
             info.reviewer_rating, info.reservation_rate, info.reservation_grade, info.grade, info.thumb, info.image};
             database.execSQL(sql,params);
         }
-
+    }
+    public static void insertDetail(DetailInfo info){
+        if (database!=null){
+            String sql = "insert into detail values(?)";
+            Object[] params = {info.id, info.title, info.date, info.user_rating, info.audience_rating, info.reviewer_rating,
+                    info.reservation_rate, info.reservation_grade, info.grade, info.thumb, info.image, info.photos, info.videos,
+            info.outlinks, info.genre, info.duration, info.audience, info.synopsis, info.director, info.actor, info.like, info.dislike};
+            database.execSQL(sql,params);
+        }
+    }
+    public static void insertComment(CommentInfo info){
+        if (database!=null){
+            String sql = "insert into comment values(?)";
+            Object[] params = {info.id, info.writer , info.movieId, info.writer_image, info.time, info.timestamp,
+                    info.rating, info.contents, info.recommend};
+            database.execSQL(sql,params);
+        }
     }
 
+    public static ArrayList<MovieInfo> selectOutline(){
+        ArrayList<MovieInfo> list = new ArrayList<MovieInfo>();
+        String sql = "select * from outline "   ;
+
+        Cursor cursor = database.rawQuery(sql,null);
+        MovieInfo info = new MovieInfo();
+        for (int i=0;i<cursor.getCount();i++){
+            cursor.moveToNext();
+            info.id = cursor.getInt(0);
+            info.title = cursor.getString(1);
+            info.title_eng = cursor.getString(2);
+            info.date = cursor.getString(3);
+            info.user_rating = cursor.getFloat(4);
+            info.audience_rating = cursor.getFloat(5);
+            info.reviewer_rating = cursor.getFloat(6);
+            info.reservation_rate = cursor.getFloat(7);
+            info.reservation_grade = cursor.getInt(8);
+            info.grade = cursor.getInt(9);
+            info.thumb = cursor.getString(10);
+            info.image = cursor.getString(11);
+            list.add(info);
+        }
+        cursor.close();
+        return list;
+    }
 }
