@@ -59,14 +59,13 @@ public class ListFragment extends Fragment {
         adapter = new MoviePageAdapter(this);
         int status = AppHelper.getConnectStatus(getContext());
         if (status != AppHelper.TYPE_UNCONNECTED) {
-            main.readMovieList();
+            readMovieList();
         } else {
             main.make_Toast("인터넷에 연결이 안 되었음!!");
             ArrayList<MovieInfo> list= AppHelper.selectOutline();
             setInfo(list);;
         }
         pager.setAdapter(adapter);
-
         Button button = rootView.findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,12 +103,49 @@ public class ListFragment extends Fragment {
         Log.d("setinfo", "setInfo: on");
         for(int i=0;i<list.size();i++){
             MovieInfo info = list.get(i);
+            AppHelper.insertOutline(info);
             Member_list mem = new Member_list();
             mem.setMemInfo(info);
 
             adapter.addItem(mem);
         }
         pager.setAdapter(adapter);
+        pager.setCurrentItem(main.listItemNumber,false);
     }
 
+    public void readMovieList(){
+        String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readMovieList";
+        url += "?" + "type=1";
+        StringRequest request = new StringRequest(
+                Request.Method.GET,
+                url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            Log.d("Response-Error", "응답1 옴");
+                            processResponse(response);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("Response-Error", "응답 오류");
+                    }
+                }
+        );
+        request.setShouldCache(false);
+        AppHelper.requestQueue.add(request);
+    }
+    @SuppressLint("SetTextI18n")
+    public void processResponse(String response){
+        Gson gson = new Gson();
+        ResponseInfo responseInfo = gson.fromJson(response, ResponseInfo.class);
+        if (responseInfo.code == 200) {
+            setInfo(responseInfo.result);
+        }
+    }
 }

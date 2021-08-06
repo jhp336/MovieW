@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     DrawerLayout drawer;
     NavigationView navigationView;
     boolean isLayoutList;
+    int listItemNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,43 +147,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    public void readMovieList(){
-        String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readMovieList";
-        url += "?" + "type=1";
-        StringRequest request = new StringRequest(
-                Request.Method.GET,
-                url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            Log.d("Response-Error", "응답1 옴");
-                            processResponse(response);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("Response-Error", "응답 오류");
-                    }
-                }
-        );
-        request.setShouldCache(false);
-        AppHelper.requestQueue.add(request);
-    }
-    @SuppressLint("SetTextI18n")
-    public void processResponse(String response){
-        Gson gson = new Gson();
-        ResponseInfo responseInfo = gson.fromJson(response, ResponseInfo.class);
-        if (responseInfo.code == 200) {
-            listFragment.setInfo(responseInfo.result);
-        }
-    }
 
     public void detailButton(int index) {
+        listItemNumber = index;
         String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readMovie";
         url += "?" + "id=" + (index + 1);
 

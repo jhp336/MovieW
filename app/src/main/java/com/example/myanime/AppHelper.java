@@ -54,7 +54,6 @@ public class AppHelper {
             String sql="";
             if(tableName.equals("outline")){
                 sql = "create table if not exists outline(" +
-                        "_id integer PRIMARY KEY autoincrement, " +
                         "id integer, " +
                         "title text, " +
                         "title_eng text, " +
@@ -71,7 +70,6 @@ public class AppHelper {
             }
             else if(tableName.equals("detail")){
                 sql = "create table if not exists detail(" +
-                        "_id integer PRIMARY KEY autoincrement, " +
                         "id integer, " +
                         "title text, " +
                         "date text, " +
@@ -98,7 +96,6 @@ public class AppHelper {
             }
             else if(tableName.equals("comment")){
                 sql = "create table if not exists comment(" +
-                        "_id integer PRIMARY KEY autoincrement, " +
                         "id integer, " +
                         "writer text, " +
                         "movieId integer, " +
@@ -116,7 +113,7 @@ public class AppHelper {
 
     public static void insertOutline(MovieInfo info){
         if (database!=null){
-            String sql = "insert into outline values(?)";
+            String sql = "insert or replace into outline values(?,?,?,?,?,?,?,?,?,?,?,?)";
             Object[] params = {info.id, info.title , info.title_eng, info.date, info.user_rating, info.audience_rating,
             info.reviewer_rating, info.reservation_rate, info.reservation_grade, info.grade, info.thumb, info.image};
             database.execSQL(sql,params);
@@ -124,7 +121,7 @@ public class AppHelper {
     }
     public static void insertDetail(DetailInfo info){
         if (database!=null){
-            String sql = "insert into detail values(?)";
+            String sql = "insert or replace into detail values(?)";
             Object[] params = {info.id, info.title, info.date, info.user_rating, info.audience_rating, info.reviewer_rating,
                     info.reservation_rate, info.reservation_grade, info.grade, info.thumb, info.image, info.photos, info.videos,
             info.outlinks, info.genre, info.duration, info.audience, info.synopsis, info.director, info.actor, info.like, info.dislike};
@@ -133,7 +130,7 @@ public class AppHelper {
     }
     public static void insertComment(CommentInfo info){
         if (database!=null){
-            String sql = "insert into comment values(?)";
+            String sql = "insert or replace into comment values(?)";
             Object[] params = {info.id, info.writer , info.movieId, info.writer_image, info.time, info.timestamp,
                     info.rating, info.contents, info.recommend};
             database.execSQL(sql,params);
@@ -145,8 +142,8 @@ public class AppHelper {
         String sql = "select * from outline "   ;
 
         Cursor cursor = database.rawQuery(sql,null);
-        MovieInfo info = new MovieInfo();
         for (int i=0;i<cursor.getCount();i++){
+            MovieInfo info = new MovieInfo();
             cursor.moveToNext();
             info.id = cursor.getInt(0);
             info.title = cursor.getString(1);
