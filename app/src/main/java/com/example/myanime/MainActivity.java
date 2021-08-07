@@ -15,6 +15,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
@@ -150,38 +151,48 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void detailButton(int index) {
         listItemNumber = index;
-        String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readMovie";
-        url += "?" + "id=" + (index + 1);
 
-        StringRequest request = new StringRequest(
-                Request.Method.GET,
-                url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            Log.d("Response-Error", "응답2 옴");
-                            processResponse2(response);
-                        } catch (Exception e) {
-                            e.printStackTrace();
+        int status = AppHelper.getConnectStatus(this);
+        if (status != AppHelper.TYPE_UNCONNECTED) {
+            String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readMovie";
+            url += "?" + "id=" + (index + 1);
+
+            StringRequest request = new StringRequest(
+                    Request.Method.GET,
+                    url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            try {
+                                Log.d("Response-Error", "응답2 옴");
+                                processResponse2(response);
+                                getSupportFragmentManager().beginTransaction().replace(R.id.container, movieFragment).addToBackStack(null).commit();
+                                isLayoutList = false;
+                                } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.d("Response-Error", "응답 오류");
                         }
                     }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("Response-Error", "응답 오류");
-                    }
-                }
-        );
+            );
 
-        request.setShouldCache(false);
-        AppHelper.requestQueue.add(request);
+            request.setShouldCache(false);
+            AppHelper.requestQueue.add(request);
 
-        requestCommentList(index);
+            requestCommentList(index);
+        }
+        else {
+            make_Toast("인터넷에 연결이 안 되었음!!");
+            movieFragment.info = AppHelper.selectDetail(index);;
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, movieFragment).addToBackStack(null).commit();
+            isLayoutList = false;
+        }
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.container, movieFragment).addToBackStack(null).commit();
-        isLayoutList = false;
     }
 
     public void requestCommentList(int index){
@@ -216,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Gson gson = new Gson();
         ResponseInfo2 DetailInfo = gson.fromJson(response, ResponseInfo2.class);
         if (DetailInfo.code == 200) {
-            movieFragment.setDetail(DetailInfo.result.get(0));
+            movieFragment.info = DetailInfo.result.get(0);
         }
     }
 

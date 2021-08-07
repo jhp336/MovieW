@@ -58,6 +58,7 @@ public class MovieFragment extends Fragment {
     CommentAdapter adapter;
     ViewGroup rootView;
     MainActivity main;
+    DetailInfo info;
     int grade, id;
 
     boolean likeState = false, hateState = false;
@@ -74,6 +75,7 @@ public class MovieFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         main = null;
+        info = null;
     }
 
     @Nullable
@@ -101,6 +103,11 @@ public class MovieFragment extends Fragment {
         actor = rootView.findViewById(R.id.textView21);
         gradeImage = rootView.findViewById(R.id.imageView5);
         commentNum = rootView.findViewById(R.id.textView28);
+
+        if(info!=null) {
+            setDetail(info);
+        }
+
         if(likeState){
             button.setBackgroundResource(R.drawable.ic_thumb_up_selected);
         }
@@ -243,6 +250,8 @@ public class MovieFragment extends Fragment {
 
     @SuppressLint("SetTextI18n")
     public void setDetail(DetailInfo info){
+        Log.d("TAG", "setDetail: ㅋㅋㅋ");
+        AppHelper.insertDetail(info);
         id = info.id;
         Glide.with(this).load(info.thumb).into(imageView);
         title.setText(info.title);

@@ -121,7 +121,7 @@ public class AppHelper {
     }
     public static void insertDetail(DetailInfo info){
         if (database!=null){
-            String sql = "insert or replace into detail values(?)";
+            String sql = "insert or replace into detail values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             Object[] params = {info.id, info.title, info.date, info.user_rating, info.audience_rating, info.reviewer_rating,
                     info.reservation_rate, info.reservation_grade, info.grade, info.thumb, info.image, info.photos, info.videos,
             info.outlinks, info.genre, info.duration, info.audience, info.synopsis, info.director, info.actor, info.like, info.dislike};
@@ -130,7 +130,7 @@ public class AppHelper {
     }
     public static void insertComment(CommentInfo info){
         if (database!=null){
-            String sql = "insert or replace into comment values(?)";
+            String sql = "insert or replace into comment values(?,?,?,?,?,?,?,?,?)";
             Object[] params = {info.id, info.writer , info.movieId, info.writer_image, info.time, info.timestamp,
                     info.rating, info.contents, info.recommend};
             database.execSQL(sql,params);
@@ -161,5 +161,42 @@ public class AppHelper {
         }
         cursor.close();
         return list;
+    }
+
+    public static DetailInfo selectDetail(int index){
+        DetailInfo info = new DetailInfo();
+        String sql = "select * from Detail ";
+
+        Cursor cursor = database.rawQuery(sql,null);
+        for (int i=0;i<cursor.getCount();i++) {
+            cursor.moveToNext();
+            if (cursor.getInt(0) == index+1){
+                info.id = index+1;
+                info.title = cursor.getString(1);
+                info.date = cursor.getString(2);
+                info.user_rating = cursor.getFloat(3);
+                info.audience_rating = cursor.getFloat(4);
+                info.reviewer_rating = cursor.getFloat(5);
+                info.reservation_rate = cursor.getFloat(6);
+                info.reservation_grade = cursor.getInt(7);
+                info.grade = cursor.getInt(8);
+                info.thumb = cursor.getString(9);
+                info.image = cursor.getString(10);
+                info.photos = cursor.getString(11);
+                info.videos = cursor.getString(12);
+                info.outlinks = cursor.getString(13);
+                info.genre = cursor.getString(14);
+                info.duration = cursor.getInt(15);
+                info.audience = cursor.getInt(16);
+                info.synopsis = cursor.getString(17);
+                info.director = cursor.getString(18);
+                info.actor = cursor.getString(19);
+                info.like = cursor.getInt(20);
+                info.dislike = cursor.getInt(21);
+                break;
+            }
+        }
+        cursor.close();
+        return info;
     }
 }
