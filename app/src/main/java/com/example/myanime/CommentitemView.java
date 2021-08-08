@@ -132,24 +132,28 @@ public class CommentitemView extends LinearLayout {
         LikeText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                likeCount_comment = Integer.parseInt(LikeCount.getText().toString());
+                int status = AppHelper.getConnectStatus(getContext());
+                if (status != AppHelper.TYPE_UNCONNECTED) {
+                    likeCount_comment = Integer.parseInt(LikeCount.getText().toString());
                 /*if(like_commentState){
                     LikeText.setTextColor(Color.parseColor("#706B6B"));
                     LikeCount.setTextColor(Color.parseColor("#706B6B"));
                     LikeText.setText("추천");
                     likeCount_comment -= 1;
                 }
-                else*/if(!like_commentState) {
-                    CommentLikeData(id);
-                    LikeText.setTextColor(Color.parseColor("#06A5A0"));
-                    LikeCount.setTextColor(Color.parseColor("#06A5A0"));
-                    LikeText.setText("추천됨");
-                    likeCount_comment += 1;
+                else*/
+                    if (!like_commentState) {
+                        CommentLikeData(id);
+                        LikeText.setTextColor(Color.parseColor("#06A5A0"));
+                        LikeCount.setTextColor(Color.parseColor("#06A5A0"));
+                        LikeText.setText("추천됨");
+                        likeCount_comment += 1;
+                    }
+                    LikeCount.setText(String.valueOf(likeCount_comment));
+                    item.setLike(String.valueOf(likeCount_comment));
+                    like_commentState = /*!like_commentState;*/true;
+                    item.setLikeState(true);
                 }
-                LikeCount.setText(String.valueOf(likeCount_comment));
-                item.setLike(String.valueOf(likeCount_comment));
-                like_commentState = /*!like_commentState;*/true;
-                item.setLikeState(true);
 
             }
         });

@@ -36,7 +36,6 @@ public class AllCommentActivity extends AppCompatActivity {
     RatingBar ratingBar;
     TextView rateView, title, rateNum;
     ImageView imageView;
-    ArrayList<CommentItem> list;
     ListView listView;
     CommentAdapter adapter;
     int grade, id;
@@ -56,7 +55,7 @@ public class AllCommentActivity extends AppCompatActivity {
         Intent passedIntent = getIntent();
         processIntent(passedIntent);
 
-        requestCommentList();
+        requestCommentList(id);
         listView.setAdapter(adapter);
 
         commentWrite = findViewById(R.id.commentWrite);
@@ -99,7 +98,7 @@ public class AllCommentActivity extends AppCompatActivity {
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == RESULT_OK && result.getData()!=null) {
                         Log.d("TAG", "onActivityResult: "+result.getData());
-                        requestCommentList();
+                        requestCommentList(id);
                     }
                 }
             });
@@ -131,9 +130,9 @@ public class AllCommentActivity extends AppCompatActivity {
         rateView.setText(String.valueOf(rateAvg));
     }
 
-    public void requestCommentList(){
+    public void requestCommentList(int id){
         String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readCommentList";
-        url += "?" + "id=" + id+ "&limit=50";
+        url += "?" + "id=" + id + "&limit=50";
         StringRequest request = new StringRequest(
                 Request.Method.GET,
                 url,
@@ -157,6 +156,7 @@ public class AllCommentActivity extends AppCompatActivity {
         );
         request.setShouldCache(false);
         AppHelper.requestQueue.add(request);
+
     }
     @SuppressLint("SetTextI18n")
     public void processResponse3(String response){

@@ -45,6 +45,9 @@ public class ListFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         main=null;
+        adapter=null;
+        pager=null;
+        Log.d("TAG", "onDetach: list");
     }
 
     @Nullable
@@ -102,6 +105,7 @@ public class ListFragment extends Fragment {
     public void setInfo(ArrayList<MovieInfo> list){
         Log.d("setinfo", "setInfo: on");
         for(int i=0;i<list.size();i++){
+            AppHelper.createTable("comment"+(i+1), i+1);
             MovieInfo info = list.get(i);
             AppHelper.insertOutline(info);
             Member_list mem = new Member_list();

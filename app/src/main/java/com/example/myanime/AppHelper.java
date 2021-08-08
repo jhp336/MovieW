@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkInfo;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -16,6 +17,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.example.myanime.data.CommentInfo;
 import com.example.myanime.data.DetailInfo;
 import com.example.myanime.data.MovieInfo;
+import com.example.myanime.data.ResponseInfo3;
 
 import java.util.ArrayList;
 
@@ -49,12 +51,12 @@ public class AppHelper {
         database = context.openOrCreateDatabase(dbName,Context.MODE_PRIVATE,null);
     }
 
-    public static void createTable(String tableName){
+    public static void createTable(String tableName, int id){
         if(database!=null){
             String sql="";
             if(tableName.equals("outline")){
                 sql = "create table if not exists outline(" +
-                        "id integer, " +
+                        "id integer PRIMARY KEY, " +
                         "title text, " +
                         "title_eng text, " +
                         "date text, " +
@@ -70,7 +72,7 @@ public class AppHelper {
             }
             else if(tableName.equals("detail")){
                 sql = "create table if not exists detail(" +
-                        "id integer, " +
+                        "id integer PRIMARY KEY, " +
                         "title text, " +
                         "date text, " +
                         "user_rating float, " +
@@ -94,9 +96,9 @@ public class AppHelper {
                         "dislike integer" +
                         ")";
             }
-            else if(tableName.equals("comment")){
-                sql = "create table if not exists comment(" +
-                        "id integer, " +
+            else if(tableName.equals("comment"+id)){
+                sql = "create table if not exists comment"+ id +"(" +
+                        "id integer PRIMARY KEY, " +
                         "writer text, " +
                         "movieId integer, " +
                         "writer_image text, " +
@@ -128,9 +130,9 @@ public class AppHelper {
             database.execSQL(sql,params);
         }
     }
-    public static void insertComment(CommentInfo info){
+    public static void insertComment(CommentInfo info, int id){
         if (database!=null){
-            String sql = "insert or replace into comment values(?,?,?,?,?,?,?,?,?)";
+            String sql = "insert or replace into comment"+ id + " values(?,?,?,?,?,?,?,?,?)";
             Object[] params = {info.id, info.writer , info.movieId, info.writer_image, info.time, info.timestamp,
                     info.rating, info.contents, info.recommend};
             database.execSQL(sql,params);
@@ -198,5 +200,28 @@ public class AppHelper {
         }
         cursor.close();
         return info;
+    }
+
+    public static ResponseInfo3 selectComment(int index){
+        ResponseInfo3 Rinfo = new ResponseInfo3();
+        String sql = "select * from comment"+(index+1)+ " order by time desc"   ;
+        Cursor cursor = database.rawQuery(sql,null);
+        for (int i=0;i<cursor.getCount();i++){
+            CommentInfo info = new CommentInfo();
+            cursor.moveToNext();
+            info.id = cursor.getInt(0);
+            info.writer = cursor.getString(1);
+            info.movieId = cursor.getInt(2);
+            info.writer_image = cursor.getString(3);
+            info.time = cursor.getString(4);
+            info.timestamp = cursor.getDouble(5);
+            info.rating = cursor.getFloat(6);
+            info.contents = cursor.getString(7);
+            info.recommend = cursor.getInt(8);
+            Rinfo.result.add(info);
+        }
+        Rinfo.totalCount = cursor.getCount();
+        cursor.close();
+        return Rinfo;
     }
 }

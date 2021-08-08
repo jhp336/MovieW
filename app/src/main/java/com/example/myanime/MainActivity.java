@@ -81,9 +81,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         AppHelper.openDB(this,"movie");
-        AppHelper.createTable("outline");
-        AppHelper.createTable("detail");
-        AppHelper.createTable("comment");
+        AppHelper.createTable("outline",0);
+        AppHelper.createTable("detail",0);
 
 
         getSupportFragmentManager().beginTransaction().add(R.id.container, listFragment).commit();
@@ -166,9 +165,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             try {
                                 Log.d("Response-Error", "응답2 옴");
                                 processResponse2(response);
-                                getSupportFragmentManager().beginTransaction().replace(R.id.container, movieFragment).addToBackStack(null).commit();
-                                isLayoutList = false;
-                                } catch (Exception e) {
+                                if(movieFragment.info_comment!=null) {
+                                    getSupportFragmentManager().beginTransaction().replace(R.id.container, movieFragment).addToBackStack(null).commit();
+                                }
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
@@ -188,11 +188,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         else {
             make_Toast("인터넷에 연결이 안 되었음!!");
-            movieFragment.info = AppHelper.selectDetail(index);;
+            movieFragment.info = AppHelper.selectDetail(index);
+            movieFragment.info_comment = AppHelper.selectComment(index);
             getSupportFragmentManager().beginTransaction().replace(R.id.container, movieFragment).addToBackStack(null).commit();
-            isLayoutList = false;
         }
-
+        isLayoutList = false;
     }
 
     public void requestCommentList(int index){
@@ -207,6 +207,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         try {
                             Log.d("Response-Error", "응답3 옴");
                             processResponse3(response);
+                            if(movieFragment.info!=null) {
+                                if(movieFragment.main==null)
+                                    getSupportFragmentManager().beginTransaction().replace(R.id.container, movieFragment).addToBackStack(null).commit();
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -235,7 +239,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Gson gson = new Gson();
         ResponseInfo3 CommentInfo = gson.fromJson(response, ResponseInfo3.class);
         if (CommentInfo.code == 200) {
-            movieFragment.setComment(CommentInfo);
+            if(movieFragment.main==null)
+                movieFragment.info_comment = CommentInfo;
+            else
+                movieFragment.setComment(CommentInfo);
         }
     }
     //코멘트 작성

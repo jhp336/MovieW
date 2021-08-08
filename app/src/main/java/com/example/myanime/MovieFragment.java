@@ -59,6 +59,7 @@ public class MovieFragment extends Fragment {
     ViewGroup rootView;
     MainActivity main;
     DetailInfo info;
+    ResponseInfo3 info_comment;
     int grade, id;
 
     boolean likeState = false, hateState = false;
@@ -76,6 +77,10 @@ public class MovieFragment extends Fragment {
         super.onDetach();
         main = null;
         info = null;
+        info_comment = null;
+        adapter = null;
+        listView = null;
+        Log.d("TAG", "onDetach: detail "+likeState);
     }
 
     @Nullable
@@ -104,8 +109,13 @@ public class MovieFragment extends Fragment {
         gradeImage = rootView.findViewById(R.id.imageView5);
         commentNum = rootView.findViewById(R.id.textView28);
 
+        listView = rootView.findViewById(R.id.listView);
+
         if(info!=null) {
             setDetail(info);
+        }
+        if(info_comment!=null){
+            setComment(info_comment);
         }
 
         if(likeState){
@@ -127,14 +137,20 @@ public class MovieFragment extends Fragment {
                 if (hateState) {
                     main.make_Toast("이미 '싫어요'를 누르셨습니다.");
                 } else {
-                    if (likeState) {
-                        LikeHateData("N","");
-                        decrLikeCount();
-                    } else {
-                        LikeHateData("Y","");
-                        incrLikeCount();
+                    int status = AppHelper.getConnectStatus(getContext());
+                    if (status != AppHelper.TYPE_UNCONNECTED) {
+                        if (likeState) {
+                            LikeHateData("N", "");
+                            decrLikeCount();
+                        } else {
+                            LikeHateData("Y", "");
+                            incrLikeCount();
+                        }
+                        likeState = !likeState;
                     }
-                    likeState = !likeState;
+                    else {
+                        main.make_Toast("인터넷을 연결해주세요.");
+                    }
                 }
 
             }
@@ -146,21 +162,24 @@ public class MovieFragment extends Fragment {
                 if (likeState) {
                     main.make_Toast("이미 '좋아요'를 누르셨습니다.");
                 } else {
-                    if (hateState) {
-                        LikeHateData("","N");
-                        decrHateCount();
-                    } else {
-                        LikeHateData("","Y");
-                        incrHateCount();
+                    int status = AppHelper.getConnectStatus(getContext());
+                    if (status != AppHelper.TYPE_UNCONNECTED) {
+                        if (hateState) {
+                            LikeHateData("", "N");
+                            decrHateCount();
+                        } else {
+                            LikeHateData("", "Y");
+                            incrHateCount();
+                        }
+                        hateState = !hateState;
                     }
-                    hateState = !hateState;
+                    else {
+                        main.make_Toast("인터넷을 연결해주세요.");
+                    }
                 }
             }
         });
 
-        listView = rootView.findViewById(R.id.listView);
-        adapter = new CommentAdapter();
-        listView.setAdapter(adapter);
 
         commentWrite = rootView.findViewById(R.id.button4);
         commentWrite.setOnClickListener(new View.OnClickListener() {
@@ -174,7 +193,13 @@ public class MovieFragment extends Fragment {
         allComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                main.showAllComment();
+                int status = AppHelper.getConnectStatus(getContext());
+                if (status != AppHelper.TYPE_UNCONNECTED) {
+                    main.showAllComment();
+                }
+                else {
+                    main.make_Toast("인터넷에 연결해주세요.");
+                }
             }
         });
         return  rootView;
@@ -251,7 +276,8 @@ public class MovieFragment extends Fragment {
     @SuppressLint("SetTextI18n")
     public void setDetail(DetailInfo info){
         Log.d("TAG", "setDetail: ㅋㅋㅋ");
-        AppHelper.insertDetail(info);
+        if (info.id!=0)
+            AppHelper.insertDetail(info);
         id = info.id;
         Glide.with(this).load(info.thumb).into(imageView);
         title.setText(info.title);
@@ -288,23 +314,27 @@ public class MovieFragment extends Fragment {
     }
 
     @SuppressLint("SetTextI18n")
-    public void setComment(ResponseInfo3 resinfo){
-        if(adapter.getCount()!=0) {
-            adapter = new CommentAdapter();
+    public void setComment(ResponseInfo3 resInfo){
+        if(id!=0) {
+            AppHelper.createTable("comment" + id, id);
         }
+        adapter = new CommentAdapter();
         Log.d("TAG", "setComment: 설정");
-        commentNum.setText(resinfo.totalCount+" 명");
-        for(int i=0;i<resinfo.result.size();i++){
-            CommentInfo info = resinfo.result.get(i);
+        commentNum.setText(resInfo.totalCount+" 명");
+        for(int i=0;i<resInfo.result.size();i++){
+            CommentInfo info = resInfo.result.get(i);
             CommentItem item = new CommentItem(info.writer,info.time,info.contents,String.valueOf(info.recommend),info.rating,false,info.id);
             adapter.addItem(item);
+            AppHelper.insertComment(info, id);
         }
         listView.setAdapter(adapter);
         int totalHeight=0;
-        for(int i=0;i<3;i++){
-            View listItem = adapter.getView(i, null, listView);
-            listItem.measure(0, 0);
-            totalHeight += listItem.getMeasuredHeight();
+        if (adapter.getCount()!=0) {
+            for (int i = 0; i < 3; i++) {
+                View listItem = adapter.getView(i, null, listView);
+                listItem.measure(0, 0);
+                totalHeight += listItem.getMeasuredHeight();
+            }
         }
         ViewGroup.LayoutParams params = listView.getLayoutParams();
         params.height = totalHeight + (listView.getDividerHeight() * 2);

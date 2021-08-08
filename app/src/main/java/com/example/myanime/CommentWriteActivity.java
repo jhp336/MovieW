@@ -55,20 +55,24 @@ public class CommentWriteActivity extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ratingBar = findViewById(R.id.ratingBar4);
-                rate = ratingBar.getRating();
-                editText = findViewById(R.id.editText1);
-                contents = editText.getText().toString();
+                int status = AppHelper.getConnectStatus(getBaseContext());
+                if (status != AppHelper.TYPE_UNCONNECTED) {
+                    ratingBar = findViewById(R.id.ratingBar4);
+                    rate = ratingBar.getRating();
+                    editText = findViewById(R.id.editText1);
+                    contents = editText.getText().toString();
 
-                if(rate == 0){
-                    MakeAlert("평점을 입력해 주세요!\n 0.5 ~ 5.0");
-                }
-                else if(contents.trim().length()>0) {
-                    dataToServer(contents,rate);
-                    returnToAllView();
+                    if (rate == 0) {
+                        MakeAlert("평점을 입력해 주세요!\n 0.5 ~ 5.0");
+                    } else if (contents.trim().length() > 0) {
+                        dataToServer(contents, rate);
+                        returnToAllView();
+                    } else {
+                        MakeAlert("코멘트를 입력해 주세요");
+                    }
                 }
                 else {
-                    MakeAlert("코멘트를 입력해 주세요");
+                    MakeAlert("인터넷에 연결해주세요!");
                 }
             }
         });
