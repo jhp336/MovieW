@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.bumptech.glide.request.target.Target;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -57,7 +59,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             imageView = itemView.findViewById(R.id.imageView);
         }
         public void setImg(GalleryItem item){
-            Glide.with(itemView.getContext()).load(Uri.parse(item.getUrl())).into(imageView);
+            Glide.with(itemView.getContext()).load(Uri.parse(item.getUrl())).override(400,600).into(imageView);
         }
     }
 }
