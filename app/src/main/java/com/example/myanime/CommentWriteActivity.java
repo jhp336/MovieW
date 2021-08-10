@@ -40,7 +40,7 @@ public class CommentWriteActivity extends AppCompatActivity {
     String contents, titleStr;
     float rate, rateAvg;
     int where, grade ,id;
-    ArrayList<CommentItem> list;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

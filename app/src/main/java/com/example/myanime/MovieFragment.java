@@ -28,6 +28,8 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -56,6 +58,7 @@ public class MovieFragment extends Fragment {
     ListView listView;
     ImageView imageView, gradeImage;
     CommentAdapter adapter;
+    RecyclerView recyclerView;
     ViewGroup rootView;
     MainActivity main;
     DetailInfo info;
@@ -108,6 +111,9 @@ public class MovieFragment extends Fragment {
         actor = rootView.findViewById(R.id.textView21);
         gradeImage = rootView.findViewById(R.id.imageView5);
         commentNum = rootView.findViewById(R.id.textView28);
+        recyclerView = rootView.findViewById(R.id.recyclerView);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false);
+        recyclerView.setLayoutManager(layoutManager);
 
         listView = rootView.findViewById(R.id.listView);
 
@@ -310,6 +316,14 @@ public class MovieFragment extends Fragment {
                 break;
         }
 
+        GalleryAdapter galleryAdapter = new GalleryAdapter(getContext());
+        String photos = info.photos;
+        String[] split = photos.split(",");
+        for(int i=0;i<split.length;i++){
+            GalleryItem item = new GalleryItem(split[i]);
+            galleryAdapter.addItem(item);
+        }
+        recyclerView.setAdapter(galleryAdapter);
 
     }
 

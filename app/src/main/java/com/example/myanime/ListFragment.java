@@ -58,7 +58,6 @@ public class ListFragment extends Fragment {
         Log.d("createview", "onCreateView: on");
         pager = rootView.findViewById(R.id.pager);
         pager.setOffscreenPageLimit(3);
-
         adapter = new MoviePageAdapter(this);
         int status = AppHelper.getConnectStatus(getContext());
         if (status != AppHelper.TYPE_UNCONNECTED) {
@@ -80,28 +79,6 @@ public class ListFragment extends Fragment {
         return rootView;
     }
 
-    static class MoviePageAdapter extends FragmentStateAdapter {
-        ArrayList<Fragment> items = new ArrayList<Fragment>();
-
-        public MoviePageAdapter(@NonNull @NotNull Fragment fragment) {
-            super(fragment);
-        }
-
-        public void addItem(Fragment item){
-            items.add(item);
-        }
-        @NonNull
-        @NotNull
-        @Override
-        public Fragment createFragment(int position) {
-            return items.get(position);
-        }
-
-        @Override
-        public int getItemCount() {
-            return items.size();
-        }
-    }
     public void setInfo(ArrayList<MovieInfo> list){
         Log.d("setinfo", "setInfo: on");
         for(int i=0;i<list.size();i++){

@@ -6,7 +6,7 @@ import android.os.Parcelable;
 
 import androidx.annotation.RequiresApi;
 
-public class CommentItem implements Parcelable {
+public class CommentItem /*implements Parcelable*/ {
     String userId, Date, Comment, Like;
     boolean likeState;
     float Rate;
@@ -20,7 +20,7 @@ public class CommentItem implements Parcelable {
         this.likeState = likeState;
         this.id = id;
     }
-    @RequiresApi(api = Build.VERSION_CODES.Q)
+  /*  @RequiresApi(api = Build.VERSION_CODES.Q)
     public  CommentItem(Parcel src) {
         userId = src.readString();
         Date = src.readString();
@@ -56,7 +56,7 @@ public class CommentItem implements Parcelable {
         dest.writeFloat(Rate);
         dest.writeBoolean(likeState);
         dest.writeInt(id);
-    }
+    }*/
 
 
 
