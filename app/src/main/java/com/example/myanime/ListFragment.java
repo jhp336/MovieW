@@ -14,17 +14,14 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.example.myanime.data.CommentInfo;
 import com.example.myanime.data.MovieInfo;
 import com.example.myanime.data.ResponseInfo;
-import com.example.myanime.data.ResponseInfo3;
 import com.google.gson.Gson;
 
 import org.jetbrains.annotations.NotNull;
@@ -92,6 +89,7 @@ public class ListFragment extends Fragment {
         }
         pager.setAdapter(adapter);
         pager.setCurrentItem(main.listItemNumber,false);
+        adapter=null;
     }
 
     public void readMovieList(){

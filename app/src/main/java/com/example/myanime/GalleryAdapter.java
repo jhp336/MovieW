@@ -54,12 +54,17 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
 
     static class ViewHolder extends RecyclerView.ViewHolder{
         ImageView imageView;
+        ImageView videoIcon;
         public ViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.imageView);
+            videoIcon = itemView.findViewById(R.id.videoIcon);
         }
         public void setImg(GalleryItem item){
-            Glide.with(itemView.getContext()).load(Uri.parse(item.getUrl())).override(400,600).into(imageView);
+            Glide.with(itemView.getContext()).load(Uri.parse(item.getUrl())).override(480,320).centerCrop().into(imageView);
+            if(!item.isVideo()) {
+                videoIcon.setVisibility(View.GONE);
+            }
         }
     }
 }

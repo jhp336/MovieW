@@ -2,31 +2,19 @@ package com.example.myanime;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -37,16 +25,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.example.myanime.data.CommentInfo;
 import com.example.myanime.data.DetailInfo;
-import com.example.myanime.data.MovieInfo;
 import com.example.myanime.data.ResponseInfo3;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,12 +41,12 @@ public class MovieFragment extends Fragment {
     Button button, button2, commentWrite, allComment;
     ListView listView;
     ImageView imageView, gradeImage;
-    CommentAdapter adapter;
     RecyclerView recyclerView;
     ViewGroup rootView;
     MainActivity main;
     DetailInfo info;
     ResponseInfo3 info_comment;
+    LinearLayout gallery;
     int grade, id;
 
     boolean likeState = false, hateState = false;
@@ -81,7 +65,6 @@ public class MovieFragment extends Fragment {
         main = null;
         info = null;
         info_comment = null;
-        adapter = null;
         listView = null;
         Log.d("TAG", "onDetach: detail "+likeState);
     }
@@ -111,6 +94,7 @@ public class MovieFragment extends Fragment {
         actor = rootView.findViewById(R.id.textView21);
         gradeImage = rootView.findViewById(R.id.imageView5);
         commentNum = rootView.findViewById(R.id.textView28);
+        gallery = rootView.findViewById(R.id.gallery);
         recyclerView = rootView.findViewById(R.id.recyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
@@ -315,15 +299,32 @@ public class MovieFragment extends Fragment {
                 gradeImage.setImageResource(R.drawable.ic_all);
                 break;
         }
-
-        GalleryAdapter galleryAdapter = new GalleryAdapter(getContext());
-        String photos = info.photos;
-        String[] split = photos.split(",");
-        for(int i=0;i<split.length;i++){
-            GalleryItem item = new GalleryItem(split[i]);
-            galleryAdapter.addItem(item);
+        if(info.photos==null&&info.videos==null){
+            gallery.setVisibility(View.GONE);
         }
-        recyclerView.setAdapter(galleryAdapter);
+        else {
+            GalleryAdapter galleryAdapter = new GalleryAdapter(getContext());
+            if (info.photos != null) {
+                String photos = info.photos;
+                String[] split_photos = photos.split(",");
+                for (int i = 0; i < split_photos.length; i++) {
+                    GalleryItem item = new GalleryItem(split_photos[i],false);
+                    galleryAdapter.addItem(item);
+                }
+            }
+
+            if(info.videos!=null) {
+                String videos = info.videos;
+                String[] split_videos = videos.split(",");
+                for (int i = 0; i < split_videos.length; i++) {
+                    String videoId = split_videos[i].substring(split_videos[i].lastIndexOf("/")+1);
+                    String url = "https://img.youtube.com/vi/"+videoId+"/sddefault.jpg";
+                    GalleryItem item = new GalleryItem(url,true);
+                    galleryAdapter.addItem(item);
+                }
+            }
+            recyclerView.setAdapter(galleryAdapter);
+        }
 
     }
 
@@ -332,7 +333,7 @@ public class MovieFragment extends Fragment {
         if(id!=0) {
             AppHelper.createTable("comment" + id, id);
         }
-        adapter = new CommentAdapter();
+        CommentAdapter adapter = new CommentAdapter();
         Log.d("TAG", "setComment: 설정");
         commentNum.setText(resInfo.totalCount+" 명");
         for(int i=0;i<resInfo.result.size();i++){
