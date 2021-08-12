@@ -22,7 +22,6 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentBottom="true"
-            app:srcCompat="@drawable/video_icon"
             android:layout_margin="5dp"/>
     </RelativeLayout>
 

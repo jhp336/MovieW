@@ -2,17 +2,21 @@ package com.example.myanime;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -323,6 +327,16 @@ public class MovieFragment extends Fragment {
                     galleryAdapter.addItem(item);
                 }
             }
+            galleryAdapter.setOnItemClickListener(new GalleryAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(GalleryAdapter.ViewHolder holder, View v, int position) {
+                    String url = galleryAdapter.getItem(position).getUrl();
+                    Intent intent = new Intent(getContext(),ImageActivity.class);
+                    intent.putExtra("url",url);
+                    startActivity(intent);
+                }
+            });
+
             recyclerView.setAdapter(galleryAdapter);
         }
 
