@@ -35,6 +35,7 @@ import com.example.myanime.data.ResponseInfo3;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -308,12 +309,14 @@ public class MovieFragment extends Fragment {
         }
         else {
             GalleryAdapter galleryAdapter = new GalleryAdapter(getContext());
+            ArrayList<GalleryItem>imageList = new ArrayList<>();
             if (info.photos != null) {
                 String photos = info.photos;
                 String[] split_photos = photos.split(",");
                 for (int i = 0; i < split_photos.length; i++) {
                     GalleryItem item = new GalleryItem(split_photos[i],false);
                     galleryAdapter.addItem(item);
+                    imageList.add(item);
                 }
             }
 
@@ -330,9 +333,9 @@ public class MovieFragment extends Fragment {
             galleryAdapter.setOnItemClickListener(new GalleryAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(GalleryAdapter.ViewHolder holder, View v, int position) {
-                    String url = galleryAdapter.getItem(position).getUrl();
                     Intent intent = new Intent(getContext(),ImageActivity.class);
-                    intent.putExtra("url",url);
+                    intent.putExtra("position",position);
+                    intent.putExtra("list", imageList);
                     startActivity(intent);
                 }
             });
