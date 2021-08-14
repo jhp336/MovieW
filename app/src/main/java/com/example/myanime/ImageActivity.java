@@ -10,10 +10,13 @@ import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Intent;
+import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
@@ -34,6 +37,7 @@ public class ImageActivity extends AppCompatActivity {
     int position;
     ArrayList<GalleryItem>list;
     LinearLayout layout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d("TAG", "onCreate: 이미지 보기");
@@ -67,16 +71,16 @@ public class ImageActivity extends AppCompatActivity {
 
     }
 
+
     public void setIndexIndicator(int count){
         ImageView[] indicator = new ImageView[count];
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        params.setMargins(16, 8, 16, 8);
+        params.setMargins(16, 0, 16, 0);
 
         for(int i=0;i<count;i++){
             indicator[i] = new ImageView(this);
-            //indicator[i].setImageDrawable(ContextCompat.getDrawable(this,R.drawable.image_index_notselect));
             indicator[i].setImageResource(R.drawable.image_index_notselect);
             indicator[i].setLayoutParams(params);
             layout.addView(indicator[i]);
@@ -86,7 +90,7 @@ public class ImageActivity extends AppCompatActivity {
 
     public void indexChange(int position){
         for(int i=0;i<layout.getChildCount();i++){
-            ImageView imageView = (ImageView)layout.getChildAt(position);
+            ImageView imageView = (ImageView)layout.getChildAt(i);
             if(position == i){
                 imageView.setImageResource(R.drawable.image_index_select);
             }
@@ -107,4 +111,6 @@ public class ImageActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 }

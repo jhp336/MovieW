@@ -3,6 +3,7 @@ package com.example.myanime;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -53,6 +54,7 @@ public class MovieFragment extends Fragment {
     ResponseInfo3 info_comment;
     LinearLayout gallery;
     int grade, id;
+    int imageCount = 0;
 
     boolean likeState = false, hateState = false;
     int likeCount, hateCount;
@@ -310,9 +312,12 @@ public class MovieFragment extends Fragment {
         else {
             GalleryAdapter galleryAdapter = new GalleryAdapter(getContext());
             ArrayList<GalleryItem>imageList = new ArrayList<>();
+            ArrayList<String>videoUrlList = new ArrayList<>();
+
             if (info.photos != null) {
                 String photos = info.photos;
                 String[] split_photos = photos.split(",");
+                imageCount = split_photos.length;
                 for (int i = 0; i < split_photos.length; i++) {
                     GalleryItem item = new GalleryItem(split_photos[i],false);
                     galleryAdapter.addItem(item);
@@ -328,14 +333,21 @@ public class MovieFragment extends Fragment {
                     String url = "https://img.youtube.com/vi/"+videoId+"/sddefault.jpg";
                     GalleryItem item = new GalleryItem(url,true);
                     galleryAdapter.addItem(item);
+                    videoUrlList.add(split_videos[i]);
                 }
             }
             galleryAdapter.setOnItemClickListener(new GalleryAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(GalleryAdapter.ViewHolder holder, View v, int position) {
-                    Intent intent = new Intent(getContext(),ImageActivity.class);
-                    intent.putExtra("position",position);
-                    intent.putExtra("list", imageList);
+                    Intent intent;
+                    if(holder.isVideo){
+                        intent = new Intent(Intent.ACTION_VIEW, Uri.parse(videoUrlList.get(position-imageCount)));
+                    }
+                    else {
+                        intent = new Intent(getContext(), ImageActivity.class);
+                        intent.putExtra("position", position);
+                        intent.putExtra("list", imageList);
+                    }
                     startActivity(intent);
                 }
             });

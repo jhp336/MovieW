@@ -75,6 +75,8 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         ImageView imageView;
         ImageView videoIcon;
         OnItemClickListener listener;
+        boolean isVideo;
+
         public ViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.imageView);
@@ -91,9 +93,11 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             Glide.with(itemView.getContext()).load(Uri.parse(item.getUrl())).override(480,320).centerCrop().into(imageView);
             if(item.isVideo()) {
                 videoIcon.setImageResource(R.drawable.video_icon);
+                isVideo = true;
             }
             else {
                 videoIcon.setVisibility(View.INVISIBLE);
+                isVideo = false;
             }
         }
         public void setOnItemClickListener(OnItemClickListener listener){
