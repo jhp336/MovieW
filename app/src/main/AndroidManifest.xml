@@ -15,14 +15,16 @@
         android:theme="@style/Theme.MyAnime"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".ImageActivity"></activity>
+        <activity android:name=".ImageActivity"/>
         <activity
             android:name=".CommentWriteActivity"
             android:label="코멘트 작성" />
         <activity
             android:name=".AllCommentActivity"
             android:label="코멘트 목록" />
-        <activity android:name=".MainActivity">
+
+        <activity android:name=".MainActivity"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

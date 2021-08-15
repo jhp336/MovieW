@@ -82,6 +82,9 @@ public class MovieFragment extends Fragment {
     public View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         Log.d("TAG", "onCreateView: 생성");
         rootView = (ViewGroup)inflater.inflate(R.layout.fragment_movie,container,false);
+
+        ImageView sortView = rootView.findViewById(R.id.sortView);
+        sortView.setVisibility(View.GONE);
         ratingbar = rootView.findViewById(R.id.ratingBar);
         textview = rootView.findViewById(R.id.textView12);
 

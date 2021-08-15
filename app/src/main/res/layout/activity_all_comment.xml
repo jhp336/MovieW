@@ -113,7 +113,7 @@
             android:layout_marginRight="16dp"
             android:background="@drawable/white_noborder_rect"
             android:drawableLeft="@drawable/ic_review_selected"
-            android:text="작성하기"
+            android:text=" 작성하기"
             android:textColor="#FF5722"
             android:textSize="20sp"
             android:textStyle="bold"

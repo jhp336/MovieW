@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/gradi_back" >
+    </item>
+    <item android:drawable="@drawable/splash_logo" android:width="120dp" android:height="120dp" android:gravity="center" android:bottom="100dp">
+    </item>
+    <item android:drawable="@drawable/connect_logo" android:width="180dp" android:height="25dp" android:gravity="center_horizontal" android:top="550dp"/>
+
+</layer-list>

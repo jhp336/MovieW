@@ -20,8 +20,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.Theme_MyAnime);
         Log.d("TAG", "onCreate: 메인");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -109,23 +112,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        return super.onOptionsItemSelected(item);
-    }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public void menuIconReset(){
+        MenuItem item_nav0 = navigationView.getMenu().getItem(0);
+        MenuItem item_nav1 = navigationView.getMenu().getItem(1);
+        MenuItem item_nav2 = navigationView.getMenu().getItem(2);
+        MenuItem item_nav3 = navigationView.getMenu().findItem(R.id.nav3);
+        item_nav0.setIcon(R.drawable.ic_list);
+        item_nav1.setIcon(R.drawable.ic_review);
+        item_nav2.setIcon(R.drawable.ic_book);
+        item_nav3.setIcon(R.drawable.ic_settings);
+    }
     @Override
     public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
+        menuIconReset();
         int id = item.getItemId();
         if (id == R.id.nav0) {
             item.setIcon(R.drawable.ic_list_selected);
             onFragmentSelected(0, null);
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            MenuItem item_nav0 = navigationView.getMenu().getItem(0);
-            item_nav0.setIcon(R.drawable.ic_list);
         }
+        else if (id == R.id.nav1){
+            item.setIcon(R.drawable.ic_review_selected);
+        }
+        else if (id == R.id.nav2){
+            item.setIcon(R.drawable.ic_book_selected);
+        }
+        else if (id == R.id.nav3){
+            item.setIcon(R.drawable.ic_settings_selected);
+        }
+        drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
@@ -142,7 +157,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void detailButton(int index) {
         listItemNumber = index;
-
+        if(navigationView.getCheckedItem()!=null) {
+            menuIconReset();
+            navigationView.getCheckedItem().setChecked(false);
+        }
         int status = AppHelper.getConnectStatus(this);
         if (status != AppHelper.TYPE_UNCONNECTED) {
             String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readMovie";
