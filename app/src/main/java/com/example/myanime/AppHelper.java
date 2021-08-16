@@ -139,9 +139,20 @@ public class AppHelper {
         }
     }
 
-    public static ArrayList<MovieInfo> selectOutline(){
+    public static ArrayList<MovieInfo> selectOutline(int type){
         ArrayList<MovieInfo> list = new ArrayList<MovieInfo>();
         String sql = "select * from outline "   ;
+        switch (type){
+            case 2:
+                sql += "order by user_rating desc";
+                break;
+            case 3:
+                sql += "order by date desc";
+                break;
+            default:
+                sql += "order by reservation_rate desc";
+                break;
+        }
 
         Cursor cursor = database.rawQuery(sql,null);
         for (int i=0;i<cursor.getCount();i++){
@@ -165,15 +176,15 @@ public class AppHelper {
         return list;
     }
 
-    public static DetailInfo selectDetail(int index){
+    public static DetailInfo selectDetail(int id){
         DetailInfo info = new DetailInfo();
         String sql = "select * from Detail ";
 
         Cursor cursor = database.rawQuery(sql,null);
         for (int i=0;i<cursor.getCount();i++) {
             cursor.moveToNext();
-            if (cursor.getInt(0) == index+1){
-                info.id = index+1;
+            if (cursor.getInt(0) == id){
+                info.id = id;
                 info.title = cursor.getString(1);
                 info.date = cursor.getString(2);
                 info.user_rating = cursor.getFloat(3);
@@ -202,9 +213,9 @@ public class AppHelper {
         return info;
     }
 
-    public static ResponseInfo3 selectComment(int index){
+    public static ResponseInfo3 selectComment(int id){
         ResponseInfo3 Rinfo = new ResponseInfo3();
-        String sql = "select * from comment"+(index+1)+ " order by time desc"   ;
+        String sql = "select * from comment"+ id + " order by time desc"   ;
         Cursor cursor = database.rawQuery(sql,null);
         for (int i=0;i<cursor.getCount();i++){
             CommentInfo info = new CommentInfo();

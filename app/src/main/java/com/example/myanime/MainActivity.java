@@ -57,8 +57,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("영화 목록");
         setSupportActionBar(toolbar);
+
 
         drawer = findViewById(R.id.layout_drawer);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    public void detailButton(int index) {
+    public void detailButton(int index,int id) {
         listItemNumber = index;
         if(navigationView.getCheckedItem()!=null) {
             menuIconReset();
@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int status = AppHelper.getConnectStatus(this);
         if (status != AppHelper.TYPE_UNCONNECTED) {
             String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readMovie";
-            url += "?" + "id=" + (index + 1);
+            url += "?" + "id=" + id;
 
             StringRequest request = new StringRequest(
                     Request.Method.GET,
@@ -194,20 +194,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             request.setShouldCache(false);
             AppHelper.requestQueue.add(request);
 
-            requestCommentList(index);
+            requestCommentList(id);
         }
         else {
             make_Toast("인터넷에 연결이 안 되었음!!");
-            movieFragment.info = AppHelper.selectDetail(index);
-            movieFragment.info_comment = AppHelper.selectComment(index);
+            movieFragment.info = AppHelper.selectDetail(id);
+            movieFragment.info_comment = AppHelper.selectComment(id);
             getSupportFragmentManager().beginTransaction().replace(R.id.container, movieFragment).addToBackStack(null).commit();
         }
         isLayoutList = false;
     }
 
-    public void requestCommentList(int index){
+    public void requestCommentList(int id){
         String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readCommentList";
-        url += "?" + "id=" + (index + 1)+ "&limit=3";
+        url += "?" + "id=" + id + "&limit=3";
         StringRequest request = new StringRequest(
                 Request.Method.GET,
                 url,
@@ -280,7 +280,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 @Override
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        requestCommentList(movieFragment.id-1);
+                        requestCommentList(movieFragment.id);
                     }
                 }
             });

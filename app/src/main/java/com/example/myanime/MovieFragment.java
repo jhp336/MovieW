@@ -83,8 +83,11 @@ public class MovieFragment extends Fragment {
         Log.d("TAG", "onCreateView: 생성");
         rootView = (ViewGroup)inflater.inflate(R.layout.fragment_movie,container,false);
 
-        ImageView sortView = rootView.findViewById(R.id.sortView);
+        ImageView sortView = main.findViewById(R.id.sortView);
         sortView.setVisibility(View.GONE);
+        if(main.getSupportActionBar()!=null)
+            main.getSupportActionBar().setTitle("영화 상세");
+
         ratingbar = rootView.findViewById(R.id.ratingBar);
         textview = rootView.findViewById(R.id.textView12);
 

@@ -28,6 +28,7 @@ public class Member_list extends Fragment {
     ImageView movieImage;
     TextView title, reservationRate, rate, grade;
     String titleStr, reservationRateStr, gradeStr, rateStr, urlStr;
+    int id;
 
     @Override
     public void onAttach(@NonNull @NotNull Context context) {
@@ -63,8 +64,9 @@ public class Member_list extends Fragment {
         return rootView;
     }
 
-    public void setMemInfo(MovieInfo info){
-        titleStr = info.title;
+    public void setMemInfo(MovieInfo info, int num){
+        id = info.id;
+        titleStr = num + ". " + info.title;
         reservationRateStr = "점유율 " + info.reservation_rate + "%";
         gradeStr = "| " + info.grade + "세 이용가 |";
         rateStr = "평점 " + info.user_rating;

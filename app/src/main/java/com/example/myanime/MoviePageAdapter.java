@@ -29,4 +29,8 @@ public class MoviePageAdapter extends FragmentStateAdapter {
     public int getItemCount() {
         return items.size();
     }
+
+    public Member_list getItem(int position) {
+        return (Member_list)items.get(position);
+    }
 }
