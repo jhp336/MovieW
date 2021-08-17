@@ -23,8 +23,10 @@ import java.util.ArrayList;
 
 public class AppHelper {
     public static RequestQueue requestQueue;
-    public static String host = "boostcourse-appapi.connect.or.kr";
-    public static int port = 10000;
+    //public static String host = "boostcourse-appapi.connect.or.kr";
+    public static String host = "localhost";
+    //public static int port = 10000;
+    public static int port = 3000;
     public static int TYPE_MOBILE = 1;
     public static final int TYPE_WIFI = 2;
     public static final int TYPE_UNCONNECTED = 3;
