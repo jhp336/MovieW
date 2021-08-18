@@ -43,7 +43,7 @@ import java.util.Map;
 
 public class MovieFragment extends Fragment {
     RatingBar ratingbar;
-    TextView textview, likeView, hateView, title, date, duration, genre, reservation, audience, synopsis, director, actor, commentNum;
+    TextView textview, likeView, hateView, title, date, company, duration, genre, share, highestViewRate, synopsis, director, actor, commentNum;
     Button button, button2, commentWrite, allComment;
     ListView listView;
     ImageView imageView, gradeImage;
@@ -98,10 +98,11 @@ public class MovieFragment extends Fragment {
         imageView = rootView.findViewById(R.id.imageView4);
         title = rootView.findViewById(R.id.textView2);
         date = rootView.findViewById(R.id.textView5);
+        company = rootView.findViewById(R.id.textView34);
         duration = rootView.findViewById(R.id.textView7);
         genre = rootView.findViewById(R.id.textView9);
-        reservation = rootView.findViewById(R.id.textView10);
-        audience = rootView.findViewById(R.id.textView14);
+        share = rootView.findViewById(R.id.textView10);
+        highestViewRate = rootView.findViewById(R.id.textView14);
         synopsis = rootView.findViewById(R.id.textView16);
         director = rootView.findViewById(R.id.textView19);
         actor = rootView.findViewById(R.id.textView21);
@@ -285,15 +286,16 @@ public class MovieFragment extends Fragment {
         Glide.with(this).load(info.thumb).into(imageView);
         title.setText(info.title);
         date.setText(info.date);
-        duration.setText(info.duration+" 분");
+        company.setText(info.company);
+        duration.setText(info.duration+" 부작");
         genre.setText(info.genre);
         likeView.setText(String.valueOf(info.like));
         hateView.setText(String.valueOf(info.dislike));
-        reservation.setText(info.reservation_grade+"위  "+info.reservation_rate+"%");
+        share.setText(info.share_grade+"위  "+info.share_rate+"%");
         ratingbar.setRating(info.user_rating);
         rate=ratingbar.getRating();
         textview.setText(String.valueOf(info.user_rating));
-        audience.setText(info.audience + " 명");
+        highestViewRate.setText(info.highestViewRate + "%");
         synopsis.setText(info.synopsis);
         director.setText(info.director);
         actor.setText(info.actor);

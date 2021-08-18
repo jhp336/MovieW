@@ -26,8 +26,8 @@ import org.jetbrains.annotations.NotNull;
 public class Member_list extends Fragment {
     MainActivity main;
     ImageView movieImage;
-    TextView title, reservationRate, rate, grade;
-    String titleStr, reservationRateStr, gradeStr, rateStr, urlStr;
+    TextView title, shareRate, rate, grade;
+    String titleStr, shareRateStr, gradeStr, rateStr, urlStr;
     int id;
 
     @Override
@@ -50,13 +50,13 @@ public class Member_list extends Fragment {
 
         movieImage = rootView.findViewById(R.id.image1);
         title = rootView.findViewById(R.id.textView29);
-        reservationRate = rootView.findViewById(R.id.textView31);
+        shareRate = rootView.findViewById(R.id.textView31);
         grade = rootView.findViewById(R.id.textView32);
         rate = rootView.findViewById(R.id.textView33);
 
         Glide.with(this).load(urlStr).transition(new DrawableTransitionOptions().crossFade()).into(movieImage);
         title.setText(titleStr);
-        reservationRate.setText(reservationRateStr);
+        shareRate.setText(shareRateStr);
         grade.setText(gradeStr);
         rate.setText(rateStr);
 
@@ -67,7 +67,7 @@ public class Member_list extends Fragment {
     public void setMemInfo(MovieInfo info, int num){
         id = info.id;
         titleStr = num + ". " + info.title;
-        reservationRateStr = "점유율 " + info.reservation_rate + "%";
+        shareRateStr = "점유율 " + info.share_rate + "%";
         gradeStr = "| " + info.grade + "세 이용가 |";
         rateStr = "평점 " + info.user_rating;
         urlStr = info.image;

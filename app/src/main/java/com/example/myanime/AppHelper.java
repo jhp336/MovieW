@@ -23,10 +23,9 @@ import java.util.ArrayList;
 
 public class AppHelper {
     public static RequestQueue requestQueue;
-    //public static String host = "boostcourse-appapi.connect.or.kr";
-    public static String host = "localhost";
-    //public static int port = 10000;
-    public static int port = 3000;
+    public static String host = "boostcourse-appapi.connect.or.kr";
+    public static String host2 = "winter-form-323208.du.r.appspot.com";
+    public static int port = 10000;
     public static int TYPE_MOBILE = 1;
     public static final int TYPE_WIFI = 2;
     public static final int TYPE_UNCONNECTED = 3;
@@ -63,10 +62,8 @@ public class AppHelper {
                         "title_eng text, " +
                         "date text, " +
                         "user_rating float, " +
-                        "audience_rating float, " +
-                        "reviewer_rating float, " +
-                        "reservation_rate float, " +
-                        "reservation_grade integer, " +
+                        "share_rate float, " +
+                        "share_grade integer, " +
                         "grade integer, " +
                         "thumb text, " +
                         "image text" +
@@ -78,10 +75,8 @@ public class AppHelper {
                         "title text, " +
                         "date text, " +
                         "user_rating float, " +
-                        "audience_rating float, " +
-                        "reviewer_rating float, " +
-                        "reservation_rate float, " +
-                        "reservation_grade integer, " +
+                        "share_rate float, " +
+                        "share_grade integer, " +
                         "grade integer, " +
                         "thumb text, " +
                         "image text, " +
@@ -90,12 +85,13 @@ public class AppHelper {
                         "outlinks text, " +
                         "genre text, " +
                         "duration integer, " +
-                        "audience integer, " +
                         "synopsis text, " +
                         "director text, " +
                         "actor text, " +
                         "likes integer, " +
-                        "dislike integer" +
+                        "dislike integer, " +
+                        "company text, " +
+                        "viewrate float" +
                         ")";
             }
             else if(tableName.equals("comment"+id)){
@@ -117,18 +113,18 @@ public class AppHelper {
 
     public static void insertOutline(MovieInfo info){
         if (database!=null){
-            String sql = "insert or replace into outline values(?,?,?,?,?,?,?,?,?,?,?,?)";
-            Object[] params = {info.id, info.title , info.title_eng, info.date, info.user_rating, info.audience_rating,
-            info.reviewer_rating, info.reservation_rate, info.reservation_grade, info.grade, info.thumb, info.image};
+            String sql = "insert or replace into outline values(?,?,?,?,?,?,?,?,?,?)";
+            Object[] params = {info.id, info.title , info.title_eng, info.date, info.user_rating, info.share_rate,
+                    info.share_grade, info.grade, info.thumb, info.image};
             database.execSQL(sql,params);
         }
     }
     public static void insertDetail(DetailInfo info){
         if (database!=null){
-            String sql = "insert or replace into detail values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-            Object[] params = {info.id, info.title, info.date, info.user_rating, info.audience_rating, info.reviewer_rating,
-                    info.reservation_rate, info.reservation_grade, info.grade, info.thumb, info.image, info.photos, info.videos,
-            info.outlinks, info.genre, info.duration, info.audience, info.synopsis, info.director, info.actor, info.like, info.dislike};
+            String sql = "insert or replace into detail values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            Object[] params = {info.id, info.title, info.date, info.user_rating, info.share_rate, info.share_grade, info.grade,
+                    info.thumb, info.image, info.photos, info.videos, info.outlinks, info.genre, info.duration, info.synopsis,
+                    info.director, info.actor, info.like, info.dislike, info.company, info.highestViewRate};
             database.execSQL(sql,params);
         }
     }
@@ -152,7 +148,7 @@ public class AppHelper {
                 sql += "order by date desc";
                 break;
             default:
-                sql += "order by reservation_rate desc";
+                sql += "order by share_rate desc";
                 break;
         }
 
@@ -165,13 +161,11 @@ public class AppHelper {
             info.title_eng = cursor.getString(2);
             info.date = cursor.getString(3);
             info.user_rating = cursor.getFloat(4);
-            info.audience_rating = cursor.getFloat(5);
-            info.reviewer_rating = cursor.getFloat(6);
-            info.reservation_rate = cursor.getFloat(7);
-            info.reservation_grade = cursor.getInt(8);
-            info.grade = cursor.getInt(9);
-            info.thumb = cursor.getString(10);
-            info.image = cursor.getString(11);
+            info.share_rate = cursor.getFloat(5);
+            info.share_grade = cursor.getInt(6);
+            info.grade = cursor.getInt(7);
+            info.thumb = cursor.getString(8);
+            info.image = cursor.getString(9);
             list.add(info);
         }
         cursor.close();
@@ -190,24 +184,23 @@ public class AppHelper {
                 info.title = cursor.getString(1);
                 info.date = cursor.getString(2);
                 info.user_rating = cursor.getFloat(3);
-                info.audience_rating = cursor.getFloat(4);
-                info.reviewer_rating = cursor.getFloat(5);
-                info.reservation_rate = cursor.getFloat(6);
-                info.reservation_grade = cursor.getInt(7);
-                info.grade = cursor.getInt(8);
-                info.thumb = cursor.getString(9);
-                info.image = cursor.getString(10);
-                info.photos = cursor.getString(11);
-                info.videos = cursor.getString(12);
-                info.outlinks = cursor.getString(13);
-                info.genre = cursor.getString(14);
-                info.duration = cursor.getInt(15);
-                info.audience = cursor.getInt(16);
-                info.synopsis = cursor.getString(17);
-                info.director = cursor.getString(18);
-                info.actor = cursor.getString(19);
-                info.like = cursor.getInt(20);
-                info.dislike = cursor.getInt(21);
+                info.share_rate = cursor.getFloat(4);
+                info.share_grade = cursor.getInt(5);
+                info.grade = cursor.getInt(6);
+                info.thumb = cursor.getString(7);
+                info.image = cursor.getString(8);
+                info.photos = cursor.getString(9);
+                info.videos = cursor.getString(10);
+                info.outlinks = cursor.getString(11);
+                info.genre = cursor.getString(12);
+                info.duration = cursor.getInt(3);
+                info.synopsis = cursor.getString(14);
+                info.director = cursor.getString(15);
+                info.actor = cursor.getString(16);
+                info.like = cursor.getInt(17);
+                info.dislike = cursor.getInt(18);
+                info.company = cursor.getString(19);
+                info.highestViewRate = cursor.getFloat(20);
                 break;
             }
         }

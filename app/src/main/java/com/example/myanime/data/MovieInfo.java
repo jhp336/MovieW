@@ -6,10 +6,8 @@ public class MovieInfo {
     public String title_eng;
     public String date;
     public float user_rating;
-    public float audience_rating;
-    public float reviewer_rating;
-    public float reservation_rate;
-    public int reservation_grade;
+    public float share_rate;
+    public int share_grade;
     public int grade;
     public String thumb;
     public String image;

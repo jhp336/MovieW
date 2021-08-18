@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         int status = AppHelper.getConnectStatus(this);
         if (status != AppHelper.TYPE_UNCONNECTED) {
-            String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readMovie";
+            String url = "http://" + AppHelper.host2 + "/home/readMovie";
             url += "?" + "id=" + id;
 
             StringRequest request = new StringRequest(

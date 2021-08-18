@@ -217,7 +217,7 @@ public class ListFragment extends Fragment {
     }
 
     public void readMovieList(int type){
-        String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/home/readMovieList";/*"/movie/readMovieList";*/
+        String url = "https://" + AppHelper.host2 + "/home/readMovieList";
         url += "?" + "type=" + type;
         StringRequest request = new StringRequest(
                 Request.Method.GET,
