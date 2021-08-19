@@ -131,8 +131,8 @@ public class AllCommentActivity extends AppCompatActivity {
     }
 
     public void requestCommentList(int id){
-        String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readCommentList";
-        url += "?" + "id=" + id + "&limit=50";
+        String url = "https://" + AppHelper.host2 + "/home/readCommentList";
+        url += "?" + "id=" + id ;
         StringRequest request = new StringRequest(
                 Request.Method.GET,
                 url,

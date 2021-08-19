@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         int status = AppHelper.getConnectStatus(this);
         if (status != AppHelper.TYPE_UNCONNECTED) {
-            String url = "http://" + AppHelper.host2 + "/home/readMovie";
+            String url = "https://" + AppHelper.host2 + "/home/readMovie";
             url += "?" + "id=" + id;
 
             StringRequest request = new StringRequest(
@@ -206,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void requestCommentList(int id){
-        String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readCommentList";
+        String url = "https://" + AppHelper.host2 +  "/home/readCommentList";
         url += "?" + "id=" + id + "&limit=3";
         StringRequest request = new StringRequest(
                 Request.Method.GET,

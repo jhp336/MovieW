@@ -210,7 +210,7 @@ public class AppHelper {
 
     public static ResponseInfo3 selectComment(int id){
         ResponseInfo3 Rinfo = new ResponseInfo3();
-        String sql = "select * from comment"+ id + " order by time desc"   ;
+        String sql = "select * from comment"+ id + " order by time"   ;
         Cursor cursor = database.rawQuery(sql,null);
         for (int i=0;i<cursor.getCount();i++){
             CommentInfo info = new CommentInfo();
