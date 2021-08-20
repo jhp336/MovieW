@@ -131,7 +131,7 @@ public class AllCommentActivity extends AppCompatActivity {
     }
 
     public void requestCommentList(int id){
-        String url = "https://" + AppHelper.host2 + "/home/readCommentList";
+        String url = "https://" + AppHelper.host + "/home/readCommentList";
         url += "?" + "id=" + id ;
         StringRequest request = new StringRequest(
                 Request.Method.GET,
@@ -168,7 +168,7 @@ public class AllCommentActivity extends AppCompatActivity {
             rateNum.setText("("+commentInfo.totalCount+" 명)");
             for(int i=0;i<commentInfo.result.size();i++){
                 CommentInfo info = commentInfo.result.get(i);
-                CommentItem item = new CommentItem(info.writer,info.time,info.contents,String.valueOf(info.recommend),info.rating,false,info.id);
+                CommentItem item = new CommentItem(info.writer,info.time,info.contents,String.valueOf(info.recommend),info.rating,false,info.id, info.movieId);
                 adapter.addItem(item);
             }
             listView.setAdapter(adapter);

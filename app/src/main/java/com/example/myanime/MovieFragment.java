@@ -210,7 +210,7 @@ public class MovieFragment extends Fragment {
     }
 
     public void LikeHateData(String like,String hate){
-        String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/increaseLikeDisLike";
+        String url = "https://" + AppHelper.host + ":" +  "/home/increaseLikeDisLike";
 
         StringRequest request = new StringRequest(
                 Request.Method.POST,
@@ -375,7 +375,7 @@ public class MovieFragment extends Fragment {
         commentNum.setText(resInfo.totalCount+" 명");
         for(int i=0;i<resInfo.result.size();i++){
             CommentInfo info = resInfo.result.get(i);
-            CommentItem item = new CommentItem(info.writer,info.time,info.contents,String.valueOf(info.recommend),info.rating,false,info.id);
+            CommentItem item = new CommentItem(info.writer,info.time,info.contents,String.valueOf(info.recommend),info.rating,false,info.id, info.movieId);
             adapter.addItem(item);
             AppHelper.insertComment(info, id);
         }
@@ -384,8 +384,11 @@ public class MovieFragment extends Fragment {
         if (adapter.getCount()!=0) {
             for (int i = 0; i < 3; i++) {
                 View listItem = adapter.getView(i, null, listView);
+                String str = adapter.items.get(i).getComment();
+                String str2 = str.replace(" ","");
+                double row = (str.length()-str2.length())/69.0 + str2.length()/19.0;
                 listItem.measure(0, 0);
-                totalHeight += listItem.getMeasuredHeight();
+                totalHeight += listItem.getMeasuredHeight() + (listItem.getMeasuredHeight()/6.5)* (int)row;
             }
         }
         ViewGroup.LayoutParams params = listView.getLayoutParams();

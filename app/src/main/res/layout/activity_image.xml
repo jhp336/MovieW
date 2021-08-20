@@ -39,10 +39,10 @@
             <LinearLayout
                 android:id="@+id/index_layout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="180dp"
+                android:layout_alignParentBottom="true"
                 android:gravity="center"
-                android:orientation="horizontal"
-                android:layout_below="@+id/pager"/>
+                android:orientation="horizontal" />
         </RelativeLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

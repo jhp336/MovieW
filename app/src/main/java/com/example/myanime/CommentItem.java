@@ -10,8 +10,8 @@ public class CommentItem /*implements Parcelable*/ {
     String userId, Date, Comment, Like;
     boolean likeState;
     float Rate;
-    int id;
-    public CommentItem(String userId, String date, String comment, String like, float rate, boolean likeState, int id) {
+    int id, movieId;
+    public CommentItem(String userId, String date, String comment, String like, float rate, boolean likeState, int id, int movieId) {
         this.userId = userId;
         this.Date = date;
         this.Comment = comment;
@@ -19,6 +19,7 @@ public class CommentItem /*implements Parcelable*/ {
         this.Rate = rate;
         this.likeState = likeState;
         this.id = id;
+        this.movieId = movieId;
     }
   /*  @RequiresApi(api = Build.VERSION_CODES.Q)
     public  CommentItem(Parcel src) {
@@ -113,5 +114,13 @@ public class CommentItem /*implements Parcelable*/ {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getMovieId() {
+        return movieId;
+    }
+
+    public void setMovieId(int movieId) {
+        this.movieId = movieId;
     }
 }

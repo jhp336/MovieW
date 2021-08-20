@@ -29,7 +29,7 @@ public class CommentitemView extends LinearLayout {
     RatingBar ratingBar;
     boolean like_commentState;
     int likeCount_comment;
-    int id;
+    int id, movieId;
 
 
     public CommentitemView(Context context) {
@@ -65,7 +65,6 @@ public class CommentitemView extends LinearLayout {
     public void setComment(String comment){
         Comment.setText(comment);
     }
-
     public void setLikeCount(String likeCount){
         LikeCount.setText(likeCount);
     }
@@ -89,9 +88,12 @@ public class CommentitemView extends LinearLayout {
     public void setCommentId(int id){
         this.id=id;
     }
+    public void setMovieId(int movieId){
+        this.movieId=movieId;
+    }
 
-    public void CommentLikeData(int id){
-        String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/increaseRecommend";
+    public void CommentLikeData(int id,int movieId,String yn){
+        String url = "https://" + AppHelper.host + ":"  + "/home/increaseRecommend";
 
         StringRequest request = new StringRequest(
                 Request.Method.POST,
@@ -118,8 +120,9 @@ public class CommentitemView extends LinearLayout {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<String, String>();
+                params.put("movie_id",String.valueOf(movieId));
                 params.put("review_id",String.valueOf(id));
-
+                params.put("recommendyn",yn);
                 return params;
             }
         };
@@ -135,15 +138,15 @@ public class CommentitemView extends LinearLayout {
                 int status = AppHelper.getConnectStatus(getContext());
                 if (status != AppHelper.TYPE_UNCONNECTED) {
                     likeCount_comment = Integer.parseInt(LikeCount.getText().toString());
-                /*if(like_commentState){
-                    LikeText.setTextColor(Color.parseColor("#706B6B"));
-                    LikeCount.setTextColor(Color.parseColor("#706B6B"));
-                    LikeText.setText("추천");
-                    likeCount_comment -= 1;
-                }
-                else*/
-                    if (!like_commentState) {
-                        CommentLikeData(id);
+                    if(like_commentState){
+                        CommentLikeData(id,movieId,"N");
+                        LikeText.setTextColor(Color.parseColor("#706B6B"));
+                        LikeCount.setTextColor(Color.parseColor("#706B6B"));
+                        LikeText.setText("추천");
+                        likeCount_comment -= 1;
+                    }
+                    else {
+                        CommentLikeData(id,movieId,"Y");
                         LikeText.setTextColor(Color.parseColor("#06A5A0"));
                         LikeCount.setTextColor(Color.parseColor("#06A5A0"));
                         LikeText.setText("추천됨");
@@ -151,8 +154,8 @@ public class CommentitemView extends LinearLayout {
                     }
                     LikeCount.setText(String.valueOf(likeCount_comment));
                     item.setLike(String.valueOf(likeCount_comment));
-                    like_commentState = /*!like_commentState;*/true;
-                    item.setLikeState(true);
+                    like_commentState = !like_commentState;
+                    item.setLikeState(like_commentState);
                 }
 
             }

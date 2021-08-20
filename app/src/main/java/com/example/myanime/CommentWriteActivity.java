@@ -116,7 +116,7 @@ public class CommentWriteActivity extends AppCompatActivity {
             });
 
     public void dataToServer(String contents, float rate){
-        String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/createComment";
+        String url = "https://" + AppHelper.host + ":"  + "/movie/createComment";
 
         StringRequest request = new StringRequest(
                 Request.Method.POST,
@@ -134,7 +134,7 @@ public class CommentWriteActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d("Response-Error", "응답 오류");
+                        Log.d("Response-Error", "응답 오류"+ error);
                     }
                 }
         ){
