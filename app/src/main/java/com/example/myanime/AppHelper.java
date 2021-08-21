@@ -105,6 +105,13 @@ public class AppHelper {
                         "recommend integer" +
                         ")";
             }
+            else if(tableName.equals("recommended")){
+                sql = "create table if not exists recommended(" +
+                        "movieid integer, " +
+                        "commentid integer, " +
+                        "PRIMARY KEY (movieid,commentid) " +
+                        ")";
+            }
             database.execSQL(sql);
         }
     }
@@ -134,98 +141,133 @@ public class AppHelper {
             database.execSQL(sql,params);
         }
     }
+    public static void insertRecommended(int movieId,int commentId){
+        if (database != null) {
+            String sql = "insert into recommended values(?,?)";
+            Object[] params = {movieId, commentId};
+            database.execSQL(sql, params);
+        }
+    }
+    public static void deleteRecommended(int movieId,int commentId){
+        if (database != null) {
+            String sql = "delete from recommended where movieid = " + movieId + " and commentid = " + commentId;
+            database.execSQL(sql);
+        }
+    }
+
 
     public static ArrayList<MovieInfo> selectOutline(int type){
-        ArrayList<MovieInfo> list = new ArrayList<MovieInfo>();
-        String sql = "select * from outline "   ;
-        switch (type){
-            case 2:
-                sql += "order by user_rating desc";
-                break;
-            case 3:
-                sql += "order by date desc";
-                break;
-            default:
-                sql += "order by share_rate desc";
-                break;
-        }
+        if (database != null) {
+            ArrayList<MovieInfo> list = new ArrayList<MovieInfo>();
+            String sql = "select * from outline ";
+            switch (type) {
+                case 2:
+                    sql += "order by user_rating desc";
+                    break;
+                case 3:
+                    sql += "order by date desc";
+                    break;
+                default:
+                    sql += "order by share_rate desc";
+                    break;
+            }
 
-        Cursor cursor = database.rawQuery(sql,null);
-        for (int i=0;i<cursor.getCount();i++){
-            MovieInfo info = new MovieInfo();
-            cursor.moveToNext();
-            info.id = cursor.getInt(0);
-            info.title = cursor.getString(1);
-            info.title_eng = cursor.getString(2);
-            info.date = cursor.getString(3);
-            info.user_rating = cursor.getFloat(4);
-            info.share_rate = cursor.getFloat(5);
-            info.share_grade = cursor.getInt(6);
-            info.grade = cursor.getInt(7);
-            info.thumb = cursor.getString(8);
-            info.image = cursor.getString(9);
-            list.add(info);
+            Cursor cursor = database.rawQuery(sql, null);
+            for (int i = 0; i < cursor.getCount(); i++) {
+                MovieInfo info = new MovieInfo();
+                cursor.moveToNext();
+                info.id = cursor.getInt(0);
+                info.title = cursor.getString(1);
+                info.title_eng = cursor.getString(2);
+                info.date = cursor.getString(3);
+                info.user_rating = cursor.getFloat(4);
+                info.share_rate = cursor.getFloat(5);
+                info.share_grade = cursor.getInt(6);
+                info.grade = cursor.getInt(7);
+                info.thumb = cursor.getString(8);
+                info.image = cursor.getString(9);
+                list.add(info);
+            }
+            cursor.close();
+            return list;
         }
-        cursor.close();
-        return list;
+        else return null;
     }
 
     public static DetailInfo selectDetail(int id){
-        DetailInfo info = new DetailInfo();
-        String sql = "select * from Detail ";
+        if (database != null) {
+            DetailInfo info = new DetailInfo();
+            String sql = "select * from Detail ";
 
-        Cursor cursor = database.rawQuery(sql,null);
-        for (int i=0;i<cursor.getCount();i++) {
-            cursor.moveToNext();
-            if (cursor.getInt(0) == id){
-                info.id = id;
-                info.title = cursor.getString(1);
-                info.date = cursor.getString(2);
-                info.user_rating = cursor.getFloat(3);
-                info.share_rate = cursor.getFloat(4);
-                info.share_grade = cursor.getInt(5);
-                info.grade = cursor.getInt(6);
-                info.thumb = cursor.getString(7);
-                info.image = cursor.getString(8);
-                info.photos = cursor.getString(9);
-                info.videos = cursor.getString(10);
-                info.outlinks = cursor.getString(11);
-                info.genre = cursor.getString(12);
-                info.duration = cursor.getInt(3);
-                info.synopsis = cursor.getString(14);
-                info.director = cursor.getString(15);
-                info.actor = cursor.getString(16);
-                info.like = cursor.getInt(17);
-                info.dislike = cursor.getInt(18);
-                info.company = cursor.getString(19);
-                info.highestViewRate = cursor.getFloat(20);
-                break;
+            Cursor cursor = database.rawQuery(sql, null);
+            for (int i = 0; i < cursor.getCount(); i++) {
+                cursor.moveToNext();
+                if (cursor.getInt(0) == id) {
+                    info.id = id;
+                    info.title = cursor.getString(1);
+                    info.date = cursor.getString(2);
+                    info.user_rating = cursor.getFloat(3);
+                    info.share_rate = cursor.getFloat(4);
+                    info.share_grade = cursor.getInt(5);
+                    info.grade = cursor.getInt(6);
+                    info.thumb = cursor.getString(7);
+                    info.image = cursor.getString(8);
+                    info.photos = cursor.getString(9);
+                    info.videos = cursor.getString(10);
+                    info.outlinks = cursor.getString(11);
+                    info.genre = cursor.getString(12);
+                    info.duration = cursor.getInt(3);
+                    info.synopsis = cursor.getString(14);
+                    info.director = cursor.getString(15);
+                    info.actor = cursor.getString(16);
+                    info.like = cursor.getInt(17);
+                    info.dislike = cursor.getInt(18);
+                    info.company = cursor.getString(19);
+                    info.highestViewRate = cursor.getFloat(20);
+                    break;
+                }
             }
+            cursor.close();
+            return info;
         }
-        cursor.close();
-        return info;
+        else return null;
     }
 
     public static ResponseInfo3 selectComment(int id){
-        ResponseInfo3 Rinfo = new ResponseInfo3();
-        String sql = "select * from comment"+ id + " order by time"   ;
-        Cursor cursor = database.rawQuery(sql,null);
-        for (int i=0;i<cursor.getCount();i++){
-            CommentInfo info = new CommentInfo();
-            cursor.moveToNext();
-            info.id = cursor.getInt(0);
-            info.writer = cursor.getString(1);
-            info.movieId = cursor.getInt(2);
-            info.writer_image = cursor.getString(3);
-            info.time = cursor.getString(4);
-            info.timestamp = cursor.getDouble(5);
-            info.rating = cursor.getFloat(6);
-            info.contents = cursor.getString(7);
-            info.recommend = cursor.getInt(8);
-            Rinfo.result.add(info);
+        if (database != null) {
+            ResponseInfo3 Rinfo = new ResponseInfo3();
+            String sql = "select * from comment" + id + " order by recommend desc";
+            Cursor cursor = database.rawQuery(sql, null);
+            for (int i = 0; i < cursor.getCount(); i++) {
+                CommentInfo info = new CommentInfo();
+                cursor.moveToNext();
+                info.id = cursor.getInt(0);
+                info.writer = cursor.getString(1);
+                info.movieId = cursor.getInt(2);
+                info.writer_image = cursor.getString(3);
+                info.time = cursor.getString(4);
+                info.timestamp = cursor.getDouble(5);
+                info.rating = cursor.getFloat(6);
+                info.contents = cursor.getString(7);
+                info.recommend = cursor.getInt(8);
+                Rinfo.result.add(info);
+            }
+            Rinfo.totalCount = cursor.getCount();
+            cursor.close();
+            return Rinfo;
         }
-        Rinfo.totalCount = cursor.getCount();
-        cursor.close();
-        return Rinfo;
+        else return null;
     }
+
+    public static boolean searchRecommended(int movieId, int commentId){
+        if (database != null) {
+            String sql = "select * from recommended where movieid = " + movieId + " and commentid = " + commentId;
+            Cursor cursor = database.rawQuery(sql,null);
+            if(cursor.getCount()!=0)
+                return true;
+            else return false;
+        }
+        else return false;
+    }
+
 }

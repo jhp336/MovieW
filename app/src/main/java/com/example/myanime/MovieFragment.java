@@ -375,7 +375,8 @@ public class MovieFragment extends Fragment {
         commentNum.setText(resInfo.totalCount+" 명");
         for(int i=0;i<resInfo.result.size();i++){
             CommentInfo info = resInfo.result.get(i);
-            CommentItem item = new CommentItem(info.writer,info.time,info.contents,String.valueOf(info.recommend),info.rating,false,info.id, info.movieId);
+            boolean isRecommended = AppHelper.searchRecommended(info.movieId,info.id);
+            CommentItem item = new CommentItem(info.writer,info.time,info.contents,String.valueOf(info.recommend),info.rating,isRecommended,info.id, info.movieId);
             adapter.addItem(item);
             AppHelper.insertComment(info, id);
         }

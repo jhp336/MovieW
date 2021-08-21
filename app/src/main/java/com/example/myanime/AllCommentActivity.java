@@ -168,7 +168,8 @@ public class AllCommentActivity extends AppCompatActivity {
             rateNum.setText("("+commentInfo.totalCount+" 명)");
             for(int i=0;i<commentInfo.result.size();i++){
                 CommentInfo info = commentInfo.result.get(i);
-                CommentItem item = new CommentItem(info.writer,info.time,info.contents,String.valueOf(info.recommend),info.rating,false,info.id, info.movieId);
+                boolean isRecommended = AppHelper.searchRecommended(info.movieId,info.id);
+                CommentItem item = new CommentItem(info.writer,info.time,info.contents,String.valueOf(info.recommend),info.rating,isRecommended,info.id, info.movieId);
                 adapter.addItem(item);
             }
             listView.setAdapter(adapter);

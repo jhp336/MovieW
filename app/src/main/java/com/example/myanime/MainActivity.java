@@ -78,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         AppHelper.openDB(this,"movie");
         AppHelper.createTable("outline",0);
         AppHelper.createTable("detail",0);
+        AppHelper.createTable("recommended",0);
 
 
         getSupportFragmentManager().beginTransaction().add(R.id.container, listFragment).commit();

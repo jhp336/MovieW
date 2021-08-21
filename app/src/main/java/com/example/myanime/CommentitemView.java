@@ -144,6 +144,7 @@ public class CommentitemView extends LinearLayout {
                         LikeCount.setTextColor(Color.parseColor("#706B6B"));
                         LikeText.setText("추천");
                         likeCount_comment -= 1;
+                        AppHelper.deleteRecommended(movieId,id);
                     }
                     else {
                         CommentLikeData(id,movieId,"Y");
@@ -151,6 +152,7 @@ public class CommentitemView extends LinearLayout {
                         LikeCount.setTextColor(Color.parseColor("#06A5A0"));
                         LikeText.setText("추천됨");
                         likeCount_comment += 1;
+                        AppHelper.insertRecommended(movieId,id);
                     }
                     LikeCount.setText(String.valueOf(likeCount_comment));
                     item.setLike(String.valueOf(likeCount_comment));
