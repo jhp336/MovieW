@@ -216,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onResponse(String response) {
                         try {
-                            Log.d("Response-Error", "응답3 옴");
+                            Log.d("Response-Error", "comment 요청");
                             processResponse3(response);
                             if(movieFragment.info!=null) {
                                 if(movieFragment.main==null)

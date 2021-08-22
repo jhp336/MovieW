@@ -140,7 +140,7 @@ public class AllCommentActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         try {
-                            Log.d("Response-Error", "gg");
+                            Log.d("Response-Error", "comment 요청");
                             processResponse3(response);
                         } catch (Exception e) {
                             e.printStackTrace();
